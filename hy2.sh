@@ -29,9 +29,9 @@ gen_uuid() {
 }
 
 get_ip() {
-  IP=$(curl -s https://api64.ipify.org || curl -s https://ipv4.icanhazip.com || echo "")
+  IP=$(curl -s https://ipinfo.io/ip)
   if [[ ! $IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    red "❌ 无法获取有效公网 IP，节点链接将使用 0.0.0.0"
+    red "❌ 获取 IP 失败，返回内容不是合法 IP：$IP"
     IP="0.0.0.0"
   fi
 }
