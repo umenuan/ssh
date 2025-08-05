@@ -33,13 +33,13 @@ bbr_manage() {
 while true; do
     clear
     echo -e "${skyblue} VPS一键脚本工具${re}"
-    echo "--------------------"
+    echo "-----------------"
     echo -e "${green} 1. 本机信息"
     echo -e "${green} 2. 系统更新"
     echo -e "${green} 3. BBR管理"
-    echo "--------------------"
+    echo "-----------------"
     echo -e "${green} 0. 退出脚本${re}"
-    echo "--------------------"
+    echo "-----------------"
     read -p $'\033[1;91m请输入你的选择: \033[0m' choice
 
     case $choice in
