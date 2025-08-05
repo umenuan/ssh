@@ -122,7 +122,7 @@ while true; do
         2)
             clear
             echo -e "${yellow}正在更新系统...${re}"
-            apt-get update && apt-get upgrade -y
+            apt update && apt upgrade -y
             echo -e "${green}系统更新完成！${re}"
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
