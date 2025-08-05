@@ -28,6 +28,14 @@ gen_uuid() {
   fi
 }
 
+get_ip() {
+  IP=$(curl -s https://api64.ipify.org || curl -s https://ipv4.icanhazip.com || echo "")
+  if [[ ! $IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    red "❌ 无法获取有效公网 IP，节点链接将使用 0.0.0.0"
+    IP="0.0.0.0"
+  fi
+}
+
 install() {
   yellow "🚀 安装 Hysteria 2..."
   bash <(curl -fsSL https://get.hy2.sh/)
@@ -82,10 +90,10 @@ uninstall() {
 
 show_link() {
   [[ ! -f $CONFIG_FILE ]] && red "❌ 配置不存在" && read -p "按回车返回主菜单..." && return
-  IP=$(curl -s https://api.ip.sb/ip || curl -s ifconfig.me)
+  get_ip
   PORT=$(grep listen "$CONFIG_FILE" | grep -o '[0-9]\+')
   PASSWORD=$(grep password "$CONFIG_FILE" | awk '{print $2}')
-  [[ -z $IP || -z $PORT || -z $PASSWORD ]] && red "❌ 配置缺失" && read -p "按回车返回主菜单..." && return
+  [[ -z $PORT || -z $PASSWORD ]] && red "❌ 配置缺失" && read -p "按回车返回主菜单..." && return
   green "📡 节点链接："
   echo "hy2://$PASSWORD@$IP:$PORT?insecure=1"
   read -p "按回车返回主菜单..."
