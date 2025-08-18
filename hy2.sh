@@ -137,13 +137,13 @@ EOF
   echo "$LINK" | tee "$NODE_FILE"
 
   echo
-  echo "================ 安装完成 ================"
+  echo "=== 安装完成 ==="
   echo "配置文件:   $CONF_FILE"
   echo "服务单元:   $UNIT_FILE"
   echo "证书路径:   $CERT_FILE"
   echo "节点链接:   $LINK"
   echo "已保存到:   $NODE_FILE"
-  echo "========================================="
+  echo "==============="
 }
 
 do_upgrade() {
@@ -184,13 +184,13 @@ do_uninstall() {
 #========== 菜单 ==========
 menu() {
   clear
-  echo "========= Hysteria2 一键管理 ========="
+  echo "=== Hysteria2 一键管理 ==="
   echo "1) 安装"
   echo "2) 升级"
   echo "3) 节点链接"
   echo "4) 卸载"
   echo "5) 退出"
-  echo "====================================="
+  echo "=========================="
   read -rp "请选择 [1-5]: " opt
   case "$opt" in
     1) do_install ;;
