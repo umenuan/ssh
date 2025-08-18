@@ -22,7 +22,7 @@ ip_address() {
 
 while true; do
     clear
-    echo -e "${skyblue} VPS一键脚本工具${re}"
+    echo -e "${skyblue} VPS详细信息${re}"
     echo "-----------------"
     echo -e "${green} 1. 本机信息"
     echo -e "${green} 2. 系统更新"
