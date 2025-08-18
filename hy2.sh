@@ -61,7 +61,7 @@ do_install() {
   read -rp "是否启用混淆（salamander）? [y/N] " ENABLE_OBFS
   ENABLE_OBFS=${ENABLE_OBFS:-N}
 
-  # 写入配置文件，增加 masquerade 配置
+  # 写入配置文件
   cat > "$CONF_FILE" <<EOF
 listen: ":${PORT}"
 
