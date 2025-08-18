@@ -19,16 +19,6 @@ ip_address() {
     ipv6_address=$(curl -s -m 2 ipv6.ip.sb)
 }
 
-# BBR管理逻辑
-bbr_manage() {
-    clear
-    install wget
-    wget --no-check-certificate -O tcpx.sh https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcpx.sh && chmod +x tcpx.sh && ./tcpx.sh
-    rm tcpx.sh
-    echo -e "${yellow}按任意键返回...${re}"
-    read -n 1 -s -r -p ""
-    echo ""
-}
 
 while true; do
     clear
@@ -36,7 +26,6 @@ while true; do
     echo "-----------------"
     echo -e "${green} 1. 本机信息"
     echo -e "${green} 2. 系统更新"
-    echo -e "${green} 3. BBR管理"
     echo "-----------------"
     echo -e "${green} 0. 退出脚本${re}"
     echo "-----------------"
@@ -128,9 +117,6 @@ while true; do
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
             echo ""
-            ;;
-        3)
-            bbr_manage
             ;;
         0)
             clear
