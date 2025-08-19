@@ -171,6 +171,9 @@ do_uninstall() {
     systemctl stop hysteria2.service
     systemctl disable hysteria2.service
     rm -f "$UNIT_FILE"
+    userdel -r hysteria
+    rm -f /etc/systemd/system/multi-user.target.wants/hysteria-server.service
+    rm -f /etc/systemd/system/multi-user.target.wants/hysteria-server@*.service
     systemctl daemon-reload
   fi
 
