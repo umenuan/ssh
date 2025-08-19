@@ -8,10 +8,16 @@
 #   4. 执行 sysctl --system 尝试立即生效
 # ========================================================
 
+echo "当前 TCP 拥塞控制算法和默认队列调度器"
+echo -n "TCP 拥塞控制算法: "
+sysctl net.ipv4.tcp_congestion_control 2>/dev/null
+echo -n "队列调度器: "
+sysctl net.core.default_qdisc 2>/dev/null
+echo
+
 # --------------------------
 # 1. 判断是否 root 权限
 # --------------------------
-# 因为写入 /etc/sysctl.d/99-sysctl.conf 和 /etc/sysctl.conf 需要 root
 if [ "$(id -u)" -ne 0 ]; then
   echo "请以 root 权限运行: sudo sh $0"
   exit 1
@@ -84,9 +90,13 @@ if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
   # 如果某些条目无法生效，忽略错误继续
   sysctl --system >/dev/null 2>&1 || true
 
-  echo "/etc/sysctl.d/99-sysctl.conf 已配置"
-  echo "/etc/sysctl.conf 已配置"
+  echo -e "/etc/sysctl.d/99-sysctl.conf\n/etc/sysctl.conf"
   echo "BBR + fq_pie 已启用并写入配置文件，重启后依然生效！"
+  echo "当前 TCP 拥塞控制算法和默认队列调度器"
+  echo -n "TCP 拥塞控制算法: "
+  sysctl net.ipv4.tcp_congestion_control 2>/dev/null
+  echo -n "队列调度器: "
+  sysctl net.core.default_qdisc 2>/dev/null
 
 else
   # 如果不支持，则提示用户
