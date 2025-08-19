@@ -85,15 +85,17 @@ if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
 
   echo -e "/etc/sysctl.d/99-sysctl.conf\n/etc/sysctl.conf"
   echo "BBR + fq_pie 已启用并写入配置文件，重启后依然生效！"
-  echo "================================================="
-  echo "当前 TCP 拥塞控制算法和默认队列调度器"
-  echo -n "TCP 拥塞控制算法: "
-  sysctl net.ipv4.tcp_congestion_control 2>/dev/null
-  echo -n "队列调度器: "
-  sysctl net.core.default_qdisc 2>/dev/null
 
 else
   # 如果不支持，则提示用户
   echo "系统不支持 BBR + fq_pie，脚本未修改配置。"
   echo "请确认内核或模块是否可用，或考虑升级内核/安装相应模块后再运行此脚本。"
 fi
+
+  echo "============================================"
+  echo "当前 TCP 拥塞控制算法和默认队列调度器"
+  echo -n "TCP 拥塞控制算法: "
+  sysctl net.ipv4.tcp_congestion_control 2>/dev/null
+  echo -n "队列调度器: "
+  sysctl net.core.default_qdisc 2>/dev/null
+  echo "============================================="
