@@ -8,13 +8,6 @@
 #   4. 执行 sysctl --system 尝试立即生效
 # ========================================================
 
-echo "当前 TCP 拥塞控制算法和默认队列调度器"
-echo -n "TCP 拥塞控制算法: "
-sysctl net.ipv4.tcp_congestion_control 2>/dev/null
-echo -n "队列调度器: "
-sysctl net.core.default_qdisc 2>/dev/null
-echo
-
 # --------------------------
 # 1. 判断是否 root 权限
 # --------------------------
@@ -26,12 +19,12 @@ fi
 # --------------------------
 # 2. 打印当前系统内核信息
 # --------------------------
-echo "=== 系统内核信息 ==="
+echo "==== 系统内核信息 ===="
 echo "内核名称: $(uname -s)"
 echo "内核版本: $(uname -r)"
 echo "机器架构: $(uname -m)"
 echo "操作系统: $(uname -o)"
-echo "===================="
+echo "======================"
 echo
 
 # --------------------------
@@ -92,6 +85,7 @@ if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
 
   echo -e "/etc/sysctl.d/99-sysctl.conf\n/etc/sysctl.conf"
   echo "BBR + fq_pie 已启用并写入配置文件，重启后依然生效！"
+  echo "================================================="
   echo "当前 TCP 拥塞控制算法和默认队列调度器"
   echo -n "TCP 拥塞控制算法: "
   sysctl net.ipv4.tcp_congestion_control 2>/dev/null
