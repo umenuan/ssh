@@ -38,6 +38,7 @@ do_install() {
     openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
       -keyout "$KEY_FILE" -out "$CERT_FILE" \
       -subj "/CN=hy2.local"
+      -quiet
     chmod 600 "$KEY_FILE"
   fi
 
@@ -184,13 +185,13 @@ do_uninstall() {
 #========== 菜单 ==========
 menu() {
   clear
-  echo "=== Hysteria2 一键管理 ==="
-  echo "1) 安装"
-  echo "2) 升级"
+  echo "= Hysteria2 一键管理 ="
+  echo "1) 安装hy2"
+  echo "2) 升级hy2"
   echo "3) 节点链接"
-  echo "4) 卸载"
+  echo "4) 卸载hy2"
   echo "5) 退出"
-  echo "=========================="
+  echo "======================"
   read -rp "请选择 [1-5]: " opt
   case "$opt" in
     1) do_install ;;
