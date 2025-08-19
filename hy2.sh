@@ -26,11 +26,12 @@ check_deps() {
         if ! command -v "$dep" &>/dev/null; then
             echo -e "${YELLOW}正在安装依赖: $dep...${NC}"
             apt update -y && apt install -y "$dep"
+            clear
         fi
     done
 }
 
-# 随机生成
+# 随机生成端口密码
 rand_port() { shuf -i 20000-60000 -n 1; }
 rand_hex() { openssl rand -hex 16; }
 
