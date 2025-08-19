@@ -37,8 +37,7 @@ do_install() {
     echo ">>> 生成自签证书（无需域名）..."
     openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
       -keyout "$KEY_FILE" -out "$CERT_FILE" \
-      -subj "/CN=hy2.local"
-      -quiet
+      -subj "/CN=hy2.local" 2>/dev/null
     chmod 600 "$KEY_FILE"
   fi
 
