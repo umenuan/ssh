@@ -84,6 +84,8 @@ if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
   # 如果某些条目无法生效，忽略错误继续
   sysctl --system >/dev/null 2>&1 || true
 
+  echo "/etc/sysctl.d/99-sysctl.conf 已配置"
+  echo "/etc/sysctl.conf 已配置"
   echo "BBR + fq_pie 已启用并写入配置文件，重启后依然生效！"
 
 else
