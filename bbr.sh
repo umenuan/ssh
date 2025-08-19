@@ -11,53 +11,55 @@
 # --------------------------
 # 1. 判断是否 root 权限
 # --------------------------
-if [[ $EUID -ne 0 ]]; then
-  echo "请以 root 权限运行: sudo bash $0"
+# 因为写入 /etc/sysctl.d/99-sysctl.conf 和 /etc/sysctl.conf 需要 root
+if [ "$(id -u)" -ne 0 ]; then
+  echo "请以 root 权限运行: sudo sh $0"
   exit 1
 fi
 
 # --------------------------
-# 2. 打印当前内核信息
+# 2. 打印当前系统内核信息
 # --------------------------
 echo "=== 系统内核信息 ==="
-echo "内核名称: $(uname -s)"
-echo "内核版本: $(uname -r)"
-echo "机器架构: $(uname -m)"
-echo "操作系统: $(uname -o)"
+# uname -srmo 会显示系统名称、版本、架构、操作系统
+uname -srmo
+# uname -r 单独显示内核版本
+echo "Kernel release: $(uname -r)"
 echo "===================="
 echo
 
 # --------------------------
 # 3. 检测 BBR 支持
 # --------------------------
-# 方法：
-#   1. sysctl 查询可用的 TCP 拥塞控制算法列表
-#   2. 如果 sysctl 没列出，再看 tcp_bbr 模块是否已加载
-#   3. 如果都不满足，判定不支持
-bbr=$(
-  sysctl -n net.ipv4.tcp_available_congestion_control 2>/dev/null | grep -qw bbr \
-    && echo 1 \
-    || lsmod | grep -qw tcp_bbr && echo 1 \
-    || echo 0
-)
+# 初始化变量
+bbr=0
+
+# 方法1: 查询可用的 TCP 拥塞控制算法
+# sysctl 输出类似: cubic reno bbr
+# grep -qw bbr 检查 bbr 是否存在，存在则 bbr=1
+sysctl -n net.ipv4.tcp_available_congestion_control 2>/dev/null | grep -qw bbr && bbr=1
+
+# 方法2: 如果模块已经加载，也算支持
+# lsmod | grep tcp_bbr 检查 tcp_bbr 模块是否已加载
+lsmod | grep -qw tcp_bbr && bbr=1
 
 # --------------------------
 # 4. 检测 fq_pie 支持
 # --------------------------
-# 方法：
-#   1. 检查 sch_fq_pie 模块是否已加载
-#   2. 如果没加载，再用 modinfo 查看内核是否存在该模块（可加载）
-#   3. 如果都不满足，判定不支持
-fqpie=$(
-  lsmod | grep -qw sch_fq_pie \
-    && echo 1 \
-    || modinfo sch_fq_pie >/dev/null 2>&1 && echo 1 \
-    || echo 0
-)
+# 初始化变量
+fqpie=0
+
+# 方法1: 检查 sch_fq_pie 模块是否已经加载
+lsmod | grep -qw sch_fq_pie && fqpie=1
+
+# 方法2: 如果内核存在该模块（可加载），也算支持
+# modinfo 成功则 fqpie=1
+modinfo sch_fq_pie >/dev/null 2>&1 && fqpie=1
 
 # --------------------------
 # 5. 输出检测结果
 # --------------------------
+# 根据变量值打印是否支持
 echo "检测 BBR 支持: $( [ $bbr -eq 1 ] && echo YES || echo NO )"
 echo "检测 fq_pie 支持: $( [ $fqpie -eq 1 ] && echo YES || echo NO )"
 echo
@@ -65,10 +67,12 @@ echo
 # --------------------------
 # 6. 如果支持，启用 BBR + fq_pie
 # --------------------------
-if [[ $bbr -eq 1 && $fqpie -eq 1 ]]; then
+if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
   echo "检测到系统支持 BBR + fq_pie，开始启用..."
-  
+
   # 将配置追加到 /etc/sysctl.d/99-sysctl.conf
+  # net.core.default_qdisc=fq_pie 表示默认队列调度器使用 fq_pie
+  # net.ipv4.tcp_congestion_control=bbr 表示 TCP 拥塞控制使用 BBR
   echo "net.core.default_qdisc=fq_pie" >> /etc/sysctl.d/99-sysctl.conf
   echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.d/99-sysctl.conf
 
@@ -77,10 +81,13 @@ if [[ $bbr -eq 1 && $fqpie -eq 1 ]]; then
   echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
 
   # 尝试立即应用配置
+  # 如果某些条目无法生效，忽略错误继续
   sysctl --system >/dev/null 2>&1 || true
 
   echo "BBR + fq_pie 已启用并写入配置文件，重启后依然生效！"
+
 else
-  echo "系统不支持 BBR + fq_pie，脚本未修改任何配置。"
+  # 如果不支持，则提示用户
+  echo "系统不支持 BBR + fq_pie，脚本未修改配置。"
   echo "请确认内核或模块是否可用，或考虑升级内核/安装相应模块后再运行此脚本。"
 fi
