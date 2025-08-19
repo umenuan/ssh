@@ -21,10 +21,10 @@ fi
 # 2. 打印当前系统内核信息
 # --------------------------
 echo "=== 系统内核信息 ==="
-# uname -srmo 会显示系统名称、版本、架构、操作系统
-uname -srmo
-# uname -r 单独显示内核版本
-echo "Kernel release: $(uname -r)"
+echo "内核名称: $(uname -s)"
+echo "内核版本: $(uname -r)"
+echo "机器架构: $(uname -m)"
+echo "操作系统: $(uname -o)"
 echo "===================="
 echo
 
