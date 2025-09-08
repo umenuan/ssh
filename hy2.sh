@@ -138,7 +138,7 @@ EOF
     # 生成节点信息
     local IP NAME LINK
     IP=$(get_pub_ip)
-    NAME="HY2-${IP}-${PORT}"
+    NAME="HY2-${IP}"
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1"
     [[ "$ENABLE_OBFS" =~ ^[Yy]$ ]] && LINK+="&obfs=salamander&obfs-password=${OBFSPASS}"
     LINK+="#${NAME}"
