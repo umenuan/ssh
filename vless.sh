@@ -166,7 +166,7 @@ generate_vless_link() {
   local ip
   ip=$(curl -s https://ipinfo.io/ip)
   local clean_path="${ws_path#/}"  # 去掉前导斜杠
-  local vless_link="vless://${uuid}@${ip}:${port}?type=ws&security=none&path=/${clean_path}#VLESS-WS-nontls"
+  local vless_link="vless://${uuid}@${ip}:${port}?type=ws&security=none&path=/${clean_path}#vless-ws-nontls"
 
   echo -e "\n${YELLOW}========== VLESS 链接 ==========${NC}"
   echo -e "${CYAN}$vless_link${NC}"
