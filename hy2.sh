@@ -118,7 +118,6 @@ EOF
     IP=$(get_pub_ip)
     NAME="HY2-${IP}"
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1"
-    [[ "$ENABLE_OBFS" =~ ^[Yy]$ ]] && LINK+="&obfs=salamander&obfs-password=${OBFSPASS}"
     LINK+="#${NAME}"
     echo "$LINK" | tee "$NODE_FILE"
 
