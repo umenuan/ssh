@@ -63,21 +63,14 @@ do_install() {
     fi
 
     # 交互式配置
-    local PORT PASS OBFSPASS
+    local PORT PASS
     PORT=$(rand_port)
     PASS=$(rand_hex)
-    OBFSPASS=$(rand_hex)
 
     read -rp "请输入服务器端口 [默认: $PORT]: " input_port
     PORT=${input_port:-$PORT}
     read -rp "请输入服务器密码 [默认: $PASS]: " input_pass
     PASS=${input_pass:-$PASS}
-
-    read -rp "是否启用 QUIC 参数? [y/N] " ENABLE_QUIC
-    ENABLE_QUIC=${ENABLE_QUIC:-N}
-
-    read -rp "是否启用混淆 (salamander)? [y/N] " ENABLE_OBFS
-    ENABLE_OBFS=${ENABLE_OBFS:-N}
 
     # 写入配置文件
     cat > "$CONF_FILE" <<EOF
@@ -98,22 +91,7 @@ masquerade:
     rewriteHost: true
 EOF
 
-    [[ "$ENABLE_OBFS" =~ ^[Yy]$ ]] && cat >> "$CONF_FILE" <<EOF
-obfs:
-  type: salamander
-  password: "${OBFSPASS}"
-EOF
-
-    [[ "$ENABLE_QUIC" =~ ^[Yy]$ ]] && cat >> "$CONF_FILE" <<EOF
-quic:
-  initStreamReceiveWindow: 15728640
-  maxStreamReceiveWindow: 15728640
-  initConnReceiveWindow: 67108864
-  maxConnReceiveWindow: 67108864
-  disablePathMTUDiscovery: false
-EOF
-
-    # 配置systemd服务
+   # 配置systemd服务
     cat > "$UNIT_FILE" <<EOF
 [Unit]
 Description=Hysteria2 Server
