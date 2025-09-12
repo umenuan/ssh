@@ -76,6 +76,8 @@ do_install() {
     cat > "$CONF_FILE" <<EOF
 listen: ":${PORT}"
 
+ignoreClientBandwidth: false
+
 auth:
   type: password
   password: "${PASS}"
