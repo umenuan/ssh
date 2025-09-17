@@ -62,6 +62,14 @@ do_install() {
         chmod 600 "$KEY_FILE"
     fi
 
+    # 设置 hysteria 用户为拥有者
+    chown hysteria:hysteria /etc/hysteria/key.pem /etc/hysteria/cert.pem
+
+    # 私钥权限 600，证书权限 644
+    chmod 777 /etc/hysteria/key.pem
+    chmod 777 /etc/hysteria/cert.pem
+
+
     # 交互式配置
     local PORT PASS
     PORT=$(rand_port)
