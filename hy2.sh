@@ -9,9 +9,9 @@ CONF_DIR="/etc/hysteria"
 CONF_FILE="${CONF_DIR}/config.yaml"
 CERT_FILE="${CONF_DIR}/cert.pem"
 KEY_FILE="${CONF_DIR}/key.pem"
-UNIT_FILE="/etc/systemd/system/hysteria-server.service"
+UNIT_FILE="/etc/systemd/system/hysteria2.service"
 NODE_FILE="${CONF_DIR}/node.txt"
-SERVICE_NAME="hysteria-server.service"
+SERVICE_NAME="hysteria2.service"
 
 # 颜色定义
 RED='\033[0;31m'
@@ -62,14 +62,6 @@ do_install() {
         chmod 600 "$KEY_FILE"
     fi
 
-    # 设置 hysteria 用户为拥有者
-    chown hysteria:hysteria /etc/hysteria/key.pem /etc/hysteria/cert.pem
-
-    # 私钥权限 600，证书权限 644
-    chmod 777 /etc/hysteria/key.pem
-    chmod 777 /etc/hysteria/cert.pem
-
-
     # 交互式配置
     local PORT PASS
     PORT=$(rand_port)
@@ -99,12 +91,8 @@ masquerade:
     rewriteHost: true
 EOF
 
-   # systemd服务处理
-    if [[ -f "$UNIT_FILE" ]]; then
-        echo -e "${YELLOW}检测到已有官方 systemd 服务：${SERVICE_NAME}，跳过创建${NC}"
-    else
-        echo -e "${GREEN}>>> 正在创建 systemd 服务文件...${NC}"
-        cat > "$UNIT_FILE" <<EOF
+   # 配置systemd服务
+    cat > "$UNIT_FILE" <<EOF
 [Unit]
 Description=Hysteria2 Server
 After=network.target
@@ -118,11 +106,9 @@ LimitNOFILE=1048576
 [Install]
 WantedBy=multi-user.target
 EOF
-        systemctl daemon-reload
-        systemctl enable "$SERVICE_NAME"
-    fi
 
-    systemctl restart "$SERVICE_NAME"
+    systemctl daemon-reload
+    systemctl enable --now "$SERVICE_NAME"
 
     # 防火墙规则
     ufw allow "$PORT/udp" >/dev/null 2>&1
@@ -141,6 +127,45 @@ EOF
     echo -e "已保存到: ${YELLOW}$NODE_FILE${NC}"
 }
 
+# 彻底卸载
+do_uninstall() {
+    echo -e "${RED}>>> 正在卸载 Hysteria2...${NC}"
+
+    # 停止服务
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+        systemctl stop "$SERVICE_NAME"
+    fi
+
+    # 禁用服务
+    if systemctl is-enabled --quiet "$SERVICE_NAME"; then
+        systemctl disable "$SERVICE_NAME"
+    fi
+
+    # 删除服务文件
+    if [[ -f "$UNIT_FILE" ]]; then
+        rm -f "$UNIT_FILE"
+        systemctl daemon-reload
+    fi
+
+    # 杀死残留进程
+    pkill -9 -f "hysteria server" 2>/dev/null || true
+
+    # 删除配置文件
+    [[ -d "$CONF_DIR" ]] && rm -rf "$CONF_DIR"
+
+    # 调用官方卸载
+    bash <(curl -fsSL https://get.hy2.sh/) --remove >/dev/null 2>&1
+
+    # 清理防火墙规则
+    if [[ -f "$CONF_FILE" ]]; then
+        local PORT
+        PORT=$(grep "listen:" "$CONF_FILE" | awk -F':' '{print $2}' | tr -d ' "')
+        ufw delete allow "$PORT/udp" 2>/dev/null || true
+    fi
+
+    echo -e "${GREEN}>>> 卸载完成，所有文件和服务已清理！${NC}"
+}
+
 # 升级Hysteria2
 do_upgrade() {
     echo -e "${GREEN}>>> 正在升级 Hysteria2...${NC}"
@@ -157,52 +182,6 @@ show_node() {
     else
         echo -e "${RED}未找到节点链接，请先执行安装！${NC}"
     fi
-}
-
-# 彻底卸载
-do_uninstall() {
-    echo -e "${RED}>>> 正在彻底卸载 Hysteria2...${NC}"
-
-    # 停止服务
-    if systemctl is-active --quiet "$SERVICE_NAME"; then
-        systemctl stop "$SERVICE_NAME"
-    fi
-
-    # 禁用并删除服务
-    if systemctl list-unit-files | grep -q "$SERVICE_NAME"; then
-        systemctl disable "$SERVICE_NAME" >/dev/null 2>&1 || true
-        rm -f "/etc/systemd/system/$SERVICE_NAME"
-    fi
-    systemctl daemon-reexec
-    systemctl daemon-reload
-
-    # 杀死残留进程
-    pkill -9 -f "hysteria server" 2>/dev/null || true
-    pkill -9 -f "hysteria" 2>/dev/null || true
-
-    # 删除可执行文件
-    rm -f /usr/local/bin/hysteria
-    rm -f /usr/bin/hysteria
-
-    # 删除配置文件和目录
-    rm -rf "$CONF_DIR"
-
-    # 删除日志和缓存
-    rm -rf /var/log/hysteria* /var/lib/hysteria*
-
-    # 调用官方卸载（防止遗漏）
-    bash <(curl -fsSL https://get.hy2.sh/) --remove >/dev/null 2>&1 || true
-
-    # 清理防火墙规则（如果能找到配置文件中的端口）
-    if [[ -f "$CONF_FILE" ]]; then
-        local PORT
-        PORT=$(grep "listen:" "$CONF_FILE" | awk -F':' '{print $2}' | tr -d ' "')
-        if [[ -n "$PORT" ]]; then
-            ufw delete allow "$PORT/udp" 2>/dev/null || true
-        fi
-    fi
-
-    echo -e "${GREEN}>>> 卸载完成，系统已恢复为未安装 Hysteria2 的状态！${NC}"
 }
 
 # 显示菜单
@@ -230,7 +209,7 @@ main() {
         case $option in
             1) do_install ;;
             2) do_upgrade ;;
-			3) do_uninstall ;;
+            3) do_uninstall ;;
             4) show_node ;;
             5) exit 0 ;;
             *) echo -e "${RED}无效选项，请重新输入！${NC}" ;;
