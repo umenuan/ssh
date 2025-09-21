@@ -10,3 +10,6 @@ bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
 ```
+```
+bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/note.sh)
+```
