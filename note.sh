@@ -7,7 +7,7 @@ send_tg() {
     local chat_id="$2"
     local msg="$3"
     curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
-        -d chat_id="${chat_id}" \
+        -d chat_id="$chat_id" \
         -d text="$msg" > /dev/null
 }
 
@@ -98,15 +98,26 @@ check_notify() {
         expire=$(date -d "$date" +%s)
         days=$(( (expire - now) / 86400 ))
 
+        # 到期前提醒
+        if [ "$days" -ge 0 ] && [ "$days" -le 3 ]; then
+            if [ "$days" -eq 0 ]; then
+                msg="🚨 最后提醒\n名称: $name\n到期日: $date\n剩余天数: 0 天"
+            elif [ "$days" -eq 1 ]; then
+                msg="⚠️ 到期提醒\n名称: $name\n到期日: $date\n剩余天数: 1 天"
+            else
+                msg="⏰ 提醒通知\n名称: $name\n到期日: $date\n剩余天数: $days 天"
+            fi
+            send_tg "$token" "$chat_id" "$msg"
+        fi
+
+        # 已过期，自动删除并通知
         if [ "$days" -lt 0 ]; then
-            echo "🗑 [$name] 已过期，自动删除"
+            del_msg="🗑 通知已过期并删除\n名称: $name\n到期日: $date"
+            send_tg "$token" "$chat_id" "$del_msg"
             continue
         fi
 
-        if [ "$days" -le 3 ]; then
-            send_tg "$token" "$chat_id" "⏰ 提醒: [$name] 将在 $days 天后到期 (到期日: $date)"
-        fi
-
+        # 保存未过期的通知
         new_content+="$name|$date|$token|$chat_id"$'\n'
     done < "$DB_FILE"
 
