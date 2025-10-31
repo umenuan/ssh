@@ -33,6 +33,7 @@ echo
 # --------------------------
 # 初始化变量
 bbr=0
+modprobe tcp_bbr
 
 # 方法1: 查询可用的 TCP 拥塞控制算法
 # sysctl 输出类似: cubic reno bbr
@@ -73,12 +74,12 @@ if [ $bbr -eq 1 ] && [ $fqpie -eq 1 ]; then
   # 将配置追加到 /etc/sysctl.d/99-sysctl.conf
   # net.core.default_qdisc=fq_pie 表示默认队列调度器使用 fq_pie
   # net.ipv4.tcp_congestion_control=bbr 表示 TCP 拥塞控制使用 BBR
-  echo "net.core.default_qdisc=fq_pie" >> /etc/sysctl.d/99-sysctl.conf
-  echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.d/99-sysctl.conf
+  echo "net.core.default_qdisc=fq_pie" > /etc/sysctl.d/99-sysctl.conf
+  echo "net.ipv4.tcp_congestion_control=bbr" > /etc/sysctl.d/99-sysctl.conf
 
   # 同时追加到 /etc/sysctl.conf，以确保传统 sysctl 加载方式也生效
-  echo "net.core.default_qdisc=fq_pie" >> /etc/sysctl.conf
-  echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+  echo "net.core.default_qdisc=fq_pie" > /etc/sysctl.conf
+  echo "net.ipv4.tcp_congestion_control=bbr" > /etc/sysctl.conf
 
   # 尝试立即应用配置
   # 如果某些条目无法生效，忽略错误继续
