@@ -104,7 +104,7 @@ EOF
     local IP NAME LINK
     IP=$(get_ipv6_addr)
     NAME="HY2-[${IP}]"
-    LINK="hysteria2://${PASS}@\[${IP}\]:${PORT}?insecure=1"
+    LINK="hysteria2://${PASS}@[${IP}]:${PORT}?insecure=1"
     LINK+="#${NAME}"
     echo "$LINK" | tee "$NODE_FILE"
 
