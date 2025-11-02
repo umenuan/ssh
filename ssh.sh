@@ -113,7 +113,7 @@ while true; do
             echo -e "${yellow}正在更新系统...${re}"
             apt update && apt upgrade -y
             apt install -y curl wget unzip sudo
-            apt autoremove
+            apt autoremove -y
             echo -e "${green}系统更新完成！${re}"
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
