@@ -26,6 +26,10 @@ while true; do
     echo "-----------------"
     echo -e "${green} 1. 本机信息"
     echo -e "${green} 2. 系统更新"
+    echo -e "${green} 3. BBR管理"
+    echo -e "${green} 4. HY2管理"
+    echo -e "${green} 5. HY2-IPV6"
+    echo -e "${green} 6. vless+ws"
     echo "-----------------"
     echo -e "${green} 0. 退出脚本${re}"
     echo "-----------------"
@@ -119,6 +123,22 @@ while true; do
             read -n 1 -s -r -p ""
             echo ""
             ;;
+        3)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
+            ;;  
+        4)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
+            ;;  
+        5)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
+            ;;  
+        6)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
+            ;;  
         0)
             clear
             exit
