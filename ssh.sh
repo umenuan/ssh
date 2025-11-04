@@ -123,34 +123,6 @@ while true; do
             read -n 1 -s -r -p ""
             echo ""
             ;;
-        3)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
-            echo -e "${yellow}按任意键返回...${re}"
-            read -n 1 -s -r -p ""
-            echo ""
-            ;;  
-        4)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
-            echo -e "${yellow}按任意键返回...${re}"
-            read -n 1 -s -r -p ""
-            echo ""
-            ;;  
-        5)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
-            echo -e "${yellow}按任意键返回...${re}"
-            read -n 1 -s -r -p ""
-            echo ""
-            ;;  
-        6)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
-            echo -e "${yellow}按任意键返回...${re}"
-            read -n 1 -s -r -p ""
-            echo ""
-            ;;  
         0)
             clear
             exit
