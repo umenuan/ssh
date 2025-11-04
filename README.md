@@ -13,3 +13,6 @@ bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
 ```
+```
+bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/univel.sh)
+```
