@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# 定义颜色
 re='\e[0m'
 red='\e[1;91m'
 white='\e[1;97m'
