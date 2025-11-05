@@ -27,7 +27,7 @@ while true; do
     echo -e "${green} 2. 系统更新"
     echo -e "${green} 3. 开启BBR"
     echo -e "${green} 4. HY2管理"
-    echo -e "${green} 5. HY2-V6"
+    echo -e "${green} 5. HY2-ipv6"
     echo -e "${green} 6. vless+ws"
     echo "-----------------"
     echo -e "${green} 0. 退出脚本${re}"
@@ -138,9 +138,9 @@ while true; do
             ;;
         5)
             clear
-            echo -e "${yellow}正在运行HY2-V6脚本...${re}"
+            echo -e "${yellow}正在运行HY2-ipv6脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
-            echo -e "${green}HY2-V6执行完成！返回主菜单...${re}"
+            echo -e "${green}HY2-ipv6执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         6)
