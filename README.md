@@ -25,3 +25,6 @@ echo -e "nameserver 2606:4700:4700::1111\nnameserver 2606:4700:4700::1001" > /et
 ```
 curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh && bash reinstall.sh debian 13 --password umenuan@233
 ```
+```
+bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13 --password umenuan@233
+```
