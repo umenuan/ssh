@@ -9,7 +9,7 @@ purple='\e[1;35m'
 skyblue='\e[1;96m'
 
 # 仅允许root用户运行
-[[ $EUID -ne 0 ]] && echo -e "${red}请在root用户下运行脚本${re}" && exit 1 
+[[ $EUID -ne 0 ]] && echo -e "${red}请在root用户下运行脚本${re}" && exit 1
 
 # 获取IPv4和IPv6
 ip_address() {
