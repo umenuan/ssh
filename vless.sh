@@ -87,9 +87,6 @@ After=network.target
 
 [Service]
 User=nobody
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
 ExecStart=/usr/local/bin/xray -config /usr/local/etc/xray/config.json
 Restart=on-failure
 RestartSec=10
