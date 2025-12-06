@@ -2,7 +2,7 @@
 
 while true; do
     clear
-    echo "===== 探针面板管理 ====="
+    echo "===== 探针管理 ====="
     echo "1) 安装哪吒 (Nezha)"
     echo "2) 卸载哪吒 (Nezha)"
     echo "3) 安装 Komari"
