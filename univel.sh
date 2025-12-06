@@ -23,10 +23,11 @@ while true; do
     echo "-----------------"
     echo -e "${green} 1. 本机信息"
     echo -e "${green} 2. 系统更新"
-    echo -e "${green} 3. 开启BBR"
-    echo -e "${green} 4. HY2-V4"
-    echo -e "${green} 5. HY2-V6"
-    echo -e "${green} 6. vless+ws"
+    echo -e "${green} 3. 探针管理"
+    echo -e "${green} 4. 开启BBR"
+    echo -e "${green} 5. HY2-V4"
+    echo -e "${green} 6. HY2-V6"
+    echo -e "${green} 7. vless+ws"
     echo "-----------------"
     echo -e "${green} 0. 退出脚本${re}"
     echo "-----------------"
@@ -122,26 +123,32 @@ while true; do
             ;;
         3)
             clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/status.sh)
+            echo -e "${green}执行完成！返回主菜单...${re}"
+            read -n 1 -s -r -p ""
+            ;;
+        4)
+            clear
             echo -e "${yellow}正在开启BBR...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
             echo -e "${green}BBR执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
-        4)
+        5)
             clear
             echo -e "${yellow}正在运行HY2管理脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
             echo -e "${green}HY2管理执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
-        5)
+        6)
             clear
             echo -e "${yellow}正在运行HY2-ipv6脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
             echo -e "${green}HY2-ipv6执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
-        6)
+        7)
             clear
             echo -e "${yellow}正在运行vless+ws脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
