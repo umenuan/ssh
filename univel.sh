@@ -19,17 +19,17 @@ ip_address() {
 
 while true; do
     clear
-    echo -e "${skyblue} VPS详细信息${re}"
+    echo -e "${skyblue}MY VPS${re}"
     echo "-----------------"
-    echo -e "${green} 1. 本机信息"
-    echo -e "${green} 2. 系统更新"
-    echo -e "${green} 3. 探针管理"
-    echo -e "${green} 4. 开启BBR"
+    echo -e "${green} 1. Information"
+    echo -e "${green} 2. Apt update"
+    echo -e "${green} 3. Monitor"
+    echo -e "${green} 4. BBR Enable"
     echo -e "${green} 5. HY2-V4"
     echo -e "${green} 6. HY2-V6"
     echo -e "${green} 7. vless+ws"
     echo "-----------------"
-    echo -e "${green} 0. 退出脚本${re}"
+    echo -e "${green} 0. Exit ${re}"
     echo "-----------------"
     read -p $'\033[1;91m请输入你的选择: \033[0m' choice
 
