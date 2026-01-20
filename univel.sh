@@ -19,7 +19,7 @@ ip_address() {
 
 while true; do
     clear
-    echo -e "${skyblue}MY VPS${re}"
+    echo -e "${skyblue}  MY VPS${re}"
     echo "-----------------"
     echo -e "${green} 1. Information"
     echo -e "${green} 2. Apt update"
