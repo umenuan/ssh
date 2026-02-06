@@ -1,6 +1,5 @@
 #!/bin/bash
 # Debian/Ubuntu  Hysteria2 (IPv6-only 版本)
-
 set -euo pipefail
 
 BIN="/usr/local/bin/hysteria"
