@@ -1,6 +1,5 @@
 #!/bin/bash
 # Debian/Ubuntu 一键管理 Hysteria2 
-
 set -euo pipefail
 
 # 常量定义
