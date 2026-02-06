@@ -27,7 +27,8 @@ while true; do
     echo -e "${green} 4. BBR Enable"
     echo -e "${green} 5. HY2-V4"
     echo -e "${green} 6. HY2-V6"
-    echo -e "${green} 7. vless+ws"
+    echo -e "${green} 7. Vless+ws"
+    echo -e "${green} 8. Reinstall"
     echo "-----------------"
     echo -e "${green} 0. Exit ${re}"
     echo "-----------------"
@@ -154,6 +155,11 @@ while true; do
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
             echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
+            ;;
+         8)
+            clear
+            echo -e "${yellow}正在运行reinstall脚本...${re}"
+            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13 --password umenuan@233
             ;;
         0)
             clear
