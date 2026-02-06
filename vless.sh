@@ -10,7 +10,7 @@ NC='\033[0m' # 无颜色
 
 # 检查是否为 root
 if [[ $EUID -ne 0 ]]; then
-  echo -e "${RED}错误: 请使用 root 用户运行此脚本${NC}"
+  echo -e "${RED}请使用 root 用户运行此脚本${NC}"
   exit 1
 fi
 
