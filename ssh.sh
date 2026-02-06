@@ -1,5 +1,5 @@
 #!/bin/bash
-export LANG=en_US.UTF-8
+# export LANG=en_US.UTF-8
 
 # 定义颜色
 re='\e[0m'
