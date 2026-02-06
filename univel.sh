@@ -22,7 +22,7 @@ while true; do
     echo -e "${skyblue}  MY VPS${re}"
     echo "-----------------"
     echo -e "${green} 1. Information"
-    echo -e "${green} 2. Apt update"
+    echo -e "${green} 2. Apt Update"
     echo -e "${green} 3. Monitor"
     echo -e "${green} 4. BBR Enable"
     echo -e "${green} 5. HY2-V4"
@@ -31,7 +31,7 @@ while true; do
     echo "-----------------"
     echo -e "${green} 0. Exit ${re}"
     echo "-----------------"
-    read -p $'\033[1;91m请输入你的选择: \033[0m' choice
+    read -p $'\033[1;91m请选择: \033[0m' choice
 
     case $choice in
         1)
@@ -131,28 +131,28 @@ while true; do
             clear
             echo -e "${yellow}正在开启BBR...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
-            echo -e "${green}BBR执行完成！返回主菜单...${re}"
+            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         5)
             clear
-            echo -e "${yellow}正在运行HY2管理脚本...${re}"
+            echo -e "${yellow}正在运行HY2-V4脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
-            echo -e "${green}HY2管理执行完成！返回主菜单...${re}"
+            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         6)
             clear
-            echo -e "${yellow}正在运行HY2-ipv6脚本...${re}"
+            echo -e "${yellow}正在运行HY2-V6脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
-            echo -e "${green}HY2-ipv6执行完成！返回主菜单...${re}"
+            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         7)
             clear
             echo -e "${yellow}正在运行vless+ws脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
-            echo -e "${green}vless+ws执行完成！返回主菜单...${re}"
+            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         0)
@@ -160,7 +160,7 @@ while true; do
             exit
             ;;
         *)
-            echo -e "${purple}无效的输入!${re}"
+            echo -e "${purple}无效输入!${re}"
             sleep 1
             ;;
     esac
