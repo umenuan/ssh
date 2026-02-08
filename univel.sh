@@ -160,7 +160,7 @@ while true; do
          8)
             clear
             echo -e "${yellow}正在运行reinstall脚本...${re}"
-            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13 --password umenuan@233
+            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
             ;;
          9)
             clear
