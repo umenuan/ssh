@@ -30,6 +30,7 @@ while true; do
     echo -e "${green} 7. Vless+ws"
     echo -e "${green} 8. Reinstall"
     echo -e "${green} 9. WARP IPv4"
+    echo -e "${green} 10.NodeQuality"
     echo "-----------------"
     echo -e "${green} 0. Exit ${re}"
     echo "-----------------"
@@ -164,6 +165,10 @@ while true; do
          9)
             clear
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh 4
+            ;;
+         10)
+            clear
+            bash <(curl -sL https://run.NodeQuality.com)
             ;;
         0)
             clear
