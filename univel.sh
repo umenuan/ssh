@@ -24,7 +24,7 @@ while true; do
     echo -e "${green} 1. Information"
     echo -e "${green} 2. Apt Update"
     echo -e "${green} 3. Monitor"
-    echo -e "${green} 4. BBR Enable"
+    echo -e "${green} 4. BBR"
     echo -e "${green} 5. HY2-V4"
     echo -e "${green} 6. HY2-V6"
     echo -e "${green} 7. Vless+ws"
