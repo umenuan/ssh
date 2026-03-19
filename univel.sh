@@ -21,8 +21,8 @@ while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
     echo "-----------------"
-    echo -e "${green} 1. Information"
-    echo -e "${green} 2. Apt Update"
+    echo -e "${green} 1. Info"
+    echo -e "${green} 2. Apt"
     echo -e "${green} 3. Monitor"
     echo -e "${green} 4. BBR"
     echo -e "${green} 5. HY2-V4"
