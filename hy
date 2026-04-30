@@ -1,6 +1,6 @@
-#!/usr/bin/bash
-
-set -e
+#!/bin/bash
+# Debian/Ubuntu 一键管理 Hysteria2 
+set -euo pipefail
 
 CONFIG_FILE="/etc/hysteria/config.yaml"
 CONFIG_DIR="/etc/hysteria"
