@@ -23,7 +23,7 @@ while true; do
     echo "-----------------"
     echo -e "${green} 1. Info"
     echo -e "${green} 2. Apt"
-    echo -e "${green} 3. Monitor"
+    echo -e "${green} 3. Panel"
     echo -e "${green} 4. BBR"
     echo -e "${green} 5. HY2-V4"
     echo -e "${green} 6. HY2-V6"
@@ -126,7 +126,7 @@ while true; do
             ;;
         3)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/status.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/panel.sh)
             echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
