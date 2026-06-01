@@ -2,12 +2,13 @@
 
 while true; do
     clear
-    echo "===== Monitoring ====="
+    echo "===== dash ====="
     echo "1) 安装哪吒 (Nezha)"
     echo "2) 卸载哪吒 (Nezha)"
     echo "3) 安装 Komari"
     echo "4) 卸载 Komari"
-    echo "5) 退出脚本"
+    echo "5) 3X-UI"
+    echo "0) 退出脚本"
     echo "======================="
     read -p "请输入选项 (1-5): " choice
 
@@ -25,6 +26,9 @@ while true; do
             sudo systemctl stop komari-agent && sudo systemctl disable komari-agent && sudo rm -f /etc/systemd/system/komari-agent.service && sudo systemctl daemon-reload && sudo rm -rf /opt/komari/agent /var/log/komari
             ;;
         5)
+            bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
+            ;;
+        0)
             echo "退出脚本..."
             exit 0
             ;;
