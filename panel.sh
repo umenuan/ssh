@@ -3,8 +3,8 @@
 while true; do
     clear
     echo "===== dash ====="
-    echo "1) 安装哪吒 (Nezha)"
-    echo "2) 卸载哪吒 (Nezha)"
+    echo "1) 安装哪吒"
+    echo "2) 卸载哪吒"
     echo "3) 安装 Komari"
     echo "4) 卸载 Komari"
     echo "5) 3X-UI"
