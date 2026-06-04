@@ -26,13 +26,13 @@ while true; do
             clear
             ipv4=$(curl -s ipv4.ip.sb);ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
-            cpu_usage_percent=$(awk '{u=$2+$3+$4+$6+$7+$8;t=u+$5;if(NR==1){u1=u;t1=t}else printf"%.2f%%\n",(u-u1)*100/(t-t1)}' <(grep '^cpu ' /proc/stat) <(sleep 1;grep '^cpu ' /proc/stat))
+            cpu_usage=$(awk '{u=$2+$3+$4+$6+$7+$8;t=u+$5;if(NR==1){u1=u;t1=t}else printf"%.2f%%\n",(u-u1)*100/(t-t1)}' <(grep '^cpu ' /proc/stat) <(sleep 1;grep '^cpu ' /proc/stat))
             cpu_cores=$(nproc);virt=$(systemd-detect-virt)
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
             disk_info=$(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')
             ipinfo=$(curl -s ipinfo.io);country=$(echo "$ipinfo" | awk -F\" '/country/{print $4}');city=$(echo "$ipinfo" | awk -F\" '/city/{print $4}');isp_info=$(echo "$ipinfo" | awk -F\" '/org/{print $4}')
             hostname=$(hostname);cpu_arch=$(uname -m);kernel_version=$(uname -r)
-            congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control);queue_algorithm=$(sysctl -n net.core.default_qdisc)
+            congestion=$(sysctl -n net.ipv4.tcp_congestion_control);queue=$(sysctl -n net.core.default_qdisc)
             os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
             net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "总接收: %.2f %s\n总发送: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB";swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
@@ -52,7 +52,7 @@ while true; do
             echo -e "${white}CPU架构: ${purple}${cpu_arch}${re}"
             echo -e "${white}CPU型号: ${purple}${cpu_info}${re}"
             echo -e "${white}CPU核心: ${purple}${cpu_cores}${re}"
-            echo -e "${white}CPU占用: ${purple}${cpu_usage_percent}${re}"
+            echo -e "${white}CPU占用: ${purple}${cpu_usage}${re}"
             echo "------------------------"
             echo -e "${white}物理内存: ${purple}${mem_info}${re}"
             echo -e "${white}虚拟内存: ${purple}${swap_info}${re}"
@@ -61,7 +61,7 @@ while true; do
             echo "------------------------"
             echo -e "${purple}$net_traffic${re}"
             echo "------------------------"
-            echo -e "${white}拥堵算法: ${purple}${congestion_algorithm} ${queue_algorithm}${re}"
+            echo -e "${white}拥堵算法: ${purple}${congestion} ${queue}${re}"
             echo "------------------------"
             echo -e "${white}IPv4: ${purple}${ipv4}${re}"
             echo -e "${white}IPv6: ${purple}${ipv6}${re}"
