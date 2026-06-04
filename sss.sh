@@ -1,31 +1,32 @@
 clear
 
-# CPU
-read cpu_info cpu_freq <<<$(awk -F': ' '/model name/&&!m{m=$2}/cpu MHz/&&!f{f=sprintf("%.0fMHz",$2)}END{print "\""m"\"" ,f}' /proc/cpuinfo)
+IFS='|' read -r cpu_info cpu_freq <<<"$(awk -F': ' '/model name/&&!m{m=$2}/cpu MHz/&&!f{f=sprintf("%.0fMHz",$2)}END{print m "|" f}' /proc/cpuinfo)"
 cpu_cores=$(grep -c '^processor' /proc/cpuinfo)
 cpu_usage_percent="$(top -bn1 | awk -F'[, %]+' '/Cpu\(s\)/{printf "%.2f",$2+$4}')%"
 
-# 内存
-read mem_used mem_total mem_percent cache_used swap_used swap_total <<<$(free -m | awk '
-NR==2{mu=$3;mt=$2;mp=$3*100/$2;c=$6}
-NR==3{su=$3;st=$2}
-END{printf "%.2f %.2f %.2f %d %d %d",mu,mt,mp,c,su,st}')
+read mem_used mem_total mem_percent cache_used swap_used swap_total <<<"$(free -m | awk 'NR==2{mu=$3;mt=$2;mp=$3*100/$2;c=$6}NR==3{su=$3;st=$2}END{printf "%.2f %.2f %.2f %d %d %d",mu,mt,mp,c,su,st}')"
 
 mem_info="${mem_used}/${mem_total} MB (${mem_percent}%)"
 cache_info="${cache_used}MB"
 swap_percentage=0; [ "$swap_total" -gt 0 ] && swap_percentage=$((swap_used*100/swap_total))
 swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
 
-# 磁盘
 disk_info=$(df -BG / | awk 'NR==2{gsub(/G/,"",$3);gsub(/G/,"",$2);printf "%d/%dGB (%s)",$3,$2,$5}')
 
-# IP归属地
-read country city isp_info <<<$(curl -s --connect-timeout 3 ipinfo.io/json | awk -F'"' '/"country"/{c=$4}/"city"/{ci=$4}/"org"/{o=$4}END{print c,ci,o}')
+ipinfo_json=$(curl -s --connect-timeout 2 --max-time 3 ipinfo.io/json)
+country=$(awk -F'"' '/"country"/{print $4}' <<<"$ipinfo_json")
+city=$(awk -F'"' '/"city"/{print $4}' <<<"$ipinfo_json")
+isp_info=$(awk -F'"' '/"org"/{print $4}' <<<"$ipinfo_json")
 
-# 系统
+ipv4_address=$(curl -s4 --connect-timeout 2 --max-time 3 ip.sb)
+ipv6_address=$(curl -s6 --connect-timeout 2 --max-time 3 ip.sb)
+[ -z "$ipv4_address" ] && ipv4_address="N/A"
+[ -z "$ipv6_address" ] && ipv6_address="N/A"
+
 hostname=$(cat /proc/sys/kernel/hostname)
 cpu_arch=$(uname -m)
 kernel_version=$(cat /proc/sys/kernel/osrelease)
+
 congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control 2>/dev/null)
 queue_algorithm=$(sysctl -n net.core.default_qdisc 2>/dev/null)
 
@@ -36,13 +37,10 @@ virt_type=$(systemd-detect-virt 2>/dev/null); [ -z "$virt_type" ] && virt_type="
 timezone=$(readlink /etc/localtime 2>/dev/null | sed 's|.*/zoneinfo/||'); [ -z "$timezone" ] && timezone=$(cat /etc/timezone 2>/dev/null)
 boot_time=$(uptime -s 2>/dev/null)
 
-# 网卡速率
 nic=$(ip route | awk '/default/{print $5;exit}')
 [ -f "/sys/class/net/$nic/speed" ] && nic_speed=$(cat "/sys/class/net/$nic/speed" 2>/dev/null)
-[ "$nic_speed" -gt 0 ] 2>/dev/null && nic_speed="${nic_speed}Mb/s"
-[ -z "$nic_speed" ] && nic_speed="Unknown"
+[ -n "$nic_speed" ] && [ "$nic_speed" -gt 0 ] 2>/dev/null && nic_speed="${nic_speed}Mb/s" || nic_speed="Unknown"
 
-# 流量统计
 output=$(awk '
 function human(x){split("Bytes KB MB GB TB",u);for(i=1;x>=1024&&i<5;i++)x/=1024;return sprintf("%.2f %s",x,u[i])}
 NR>2{rx+=$2;tx+=$10}
@@ -74,7 +72,8 @@ ${white}虚拟内存: ${purple}${swap_info}${re}
 ${white}缓存占用: ${purple}${cache_info}${re}
 ${white}硬盘占用: ${purple}${disk_info}${re}
 ------------------------
-${purple}${output}${re}${white}网卡速率: ${purple}${nic_speed}${re}
+${purple}${output}${re}
+${white}网卡速率: ${purple}${nic_speed}${re}
 ------------------------
 ${white}网络拥堵算法: ${purple}${congestion_algorithm} ${queue_algorithm}${re}
 ------------------------
