@@ -19,7 +19,7 @@ while true; do
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
-    read -p $'\033[1;91m pick: \033[0m' choice
+    read -p $'\033[1;91m Pick: \033[0m' choice
 
     case $choice in
         1)
