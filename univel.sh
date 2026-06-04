@@ -82,6 +82,7 @@ while true; do
             apt install -y curl wget unzip sudo
             apt autoremove -y
             echo -e "${green}更新完成！${re}"
+            read -n 1 -s -r -p ""
             ;;
         3)
             clear
