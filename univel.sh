@@ -78,7 +78,7 @@ while true; do
             echo -e "${white}地理位置: ${purple}${country} $city${re}"
             echo -e "${white}系统时间: ${purple}${current_time}${re}"
             echo "------------------------"
-            echo -e "${white}运行时长: ${purple}${runtime}${re}"
+            echo -e "${white}已运行: ${purple}${runtime}${re}"
             echo ""
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
