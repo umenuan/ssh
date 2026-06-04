@@ -93,39 +93,32 @@ while true; do
             apt install -y curl wget unzip sudo
             apt autoremove -y
             echo -e "${green}更新完成！${re}"
-            echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
             echo ""
             ;;
         3)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/panel.sh)
-            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         4)
             clear
-            echo -e "${yellow}正在开启BBR...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
-            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         5)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
-            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         6)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
-            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         7)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
-            echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
          8)
