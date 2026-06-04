@@ -1,5 +1,4 @@
 clear
-ip_address
 
 # CPU
 read cpu_info cpu_freq <<<$(awk -F': ' '/model name/&&!m{m=$2}/cpu MHz/&&!f{f=sprintf("%.0fMHz",$2)}END{print "\""m"\"" ,f}' /proc/cpuinfo)
