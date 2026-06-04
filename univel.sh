@@ -5,7 +5,7 @@ re='\e[0m'; red='\e[1;91m'; white='\e[1;97m'; green='\e[1;32m'; yellow='\e[1;33m
 while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
-    echo "======"
+    echo "=========="
     echo -e "${green} 1. Info"
     echo -e "${green} 2. Apt"
     echo -e "${green} 3. Panel"
@@ -16,9 +16,9 @@ while true; do
     echo -e "${green} 8. Reinstall"
     echo -e "${green} 9. WARP+v4"
     echo -e "${green} 10.NQ"
-    echo "======"
+    echo "=========="
     echo -e "${green} 0. Exit ${re}"
-    echo "======"
+    echo "=========="
     read -p $'\033[1;91m请选择: \033[0m' choice
 
     case $choice in
@@ -51,7 +51,7 @@ while true; do
             runtime=$(uptime -p)
             echo ""
             echo -e "${white}vps信息${re}"
-            echo "======"
+            echo "=========="
             echo -e "${white}主机名: ${purple}${hostname}${re}"
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
             echo "------------------------"
