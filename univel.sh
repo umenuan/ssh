@@ -57,6 +57,7 @@ while true; do
             echo -e "${white}CPU核心: ${purple}${cpu_cores}${re}"
             echo -e "${white}CPU频率: ${purple}${cpu_freq}${re}"
             echo -e "${white}CPU占用: ${purple}${cpu_usage}${re}"
+            echo "------------------------"
             echo -e "${white}TCP|UDP: ${purple}${tcp}|${udp}${re}"
             echo "------------------------"
             echo -e "${white}物理内存: ${purple}${mem_info}${re}"
