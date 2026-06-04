@@ -51,7 +51,7 @@ while true; do
             virt=$(systemd-detect-virt)
             runtime=$(uptime -p)
             echo ""
-            echo -e "${white}系统信息${re}"
+            echo -e "${white}vps信息${re}"
             echo "------------------------"
             echo -e "${white}主机名: ${purple}${hostname}${re}"
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
