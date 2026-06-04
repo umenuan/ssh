@@ -35,7 +35,7 @@ while true; do
             hostname=$(hostname);cpu_arch=$(uname -m);kernel_version=$(uname -r)
             congestion=$(sysctl -n net.ipv4.tcp_congestion_control);queue=$(sysctl -n net.core.default_qdisc)
             os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
-            net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "总接收: %.2f %s\n总发送: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
+            net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "下载: %.2f %s\n上传: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB";swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             dns=$(awk '/^nameserver/{printf "%s ", $2} END {print ""}' /etc/resolv.conf)
             loadavg=$(awk '{print $1, $2, $3}' /proc/loadavg)
