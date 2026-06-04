@@ -94,7 +94,6 @@ while true; do
             apt autoremove -y
             echo -e "${green}更新完成！${re}"
             read -n 1 -s -r -p ""
-            echo ""
             ;;
         3)
             clear
