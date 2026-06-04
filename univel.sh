@@ -48,6 +48,7 @@ while true; do
             swap_info="${swap_used}MB/${swap_total}MB"
             swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             loadavg=$(awk '{print $1, $2, $3}' /proc/loadavg)
+            virt=$(systemd-detect-virt)
             runtime=$(uptime -p)
             echo ""
             echo -e "${white}系统信息${re}"
@@ -55,6 +56,7 @@ while true; do
             echo -e "${white}主机名: ${purple}${hostname}${re}"
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
             echo "------------------------"
+            echo -e "${white}虚拟化: ${purple}${virt}${re}"
             echo -e "${white}系统版本: ${purple}${os_info}${re}"
             echo -e "${white}内核版本: ${purple}${kernel_version}${re}"
             echo "------------------------"
