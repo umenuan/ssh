@@ -60,7 +60,7 @@ while true; do
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
             echo "------------------------"
             echo -e "${white}系统版本: ${purple}${os_info}${re}"
-            echo -e "${white}Linux内核: ${purple}${kernel_version}${re}"
+            echo -e "${white}内核版本: ${purple}${kernel_version}${re}"
             echo "------------------------"
             echo -e "${white}CPU架构: ${purple}${cpu_arch}${re}"
             echo -e "${white}CPU型号: ${purple}${cpu_info}${re}"
