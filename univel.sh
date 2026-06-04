@@ -58,11 +58,9 @@ while true; do
             [ -z "$os_info" ] && os_info="Debian $(cat /etc/debian_version 2>/dev/null)"
             net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "总接收: %.2f %s\n总发送: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
             current_time=$(date "+%Y-%m-%d %I:%M %p")
-            swap_used=$(free -m | awk 'NR==3{print $3}')
-            swap_total=$(free -m | awk 'NR==3{print $2}')
-            swap_percentage=0
-            [ "$swap_total" -ne 0 ] && swap_percentage=$((swap_used * 100 / swap_total))
-            swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+            read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}')
+            swap_info="${swap_used}MB/${swap_total}MB"
+            swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             runtime=$(uptime -p)
             echo ""
             echo -e "${white}系统信息${re}"
