@@ -24,8 +24,7 @@ while true; do
     case $choice in
         1)
             clear
-            ipv4_address=$(curl -s -m 2 ipv4.ip.sb)
-            ipv6_address=$(curl -s -m 2 ipv6.ip.sb)
+            ipv4_address=$(curl ipv4.ip.sb);ipv6_address=$(curl ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
             cpu_usage_percent=$(awk '{u=$2+$3+$4+$6+$7+$8;t=u+$5;if(NR==1){u1=u;t1=t}else printf"%.2f%%\n",(u-u1)*100/(t-t1)}' <(grep '^cpu ' /proc/stat) <(sleep 1;grep '^cpu ' /proc/stat))
             cpu_cores=$(nproc)
