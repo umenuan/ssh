@@ -47,6 +47,7 @@ while true; do
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}')
             swap_info="${swap_used}MB/${swap_total}MB"
             swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
+            loadavg=$(awk '{print $1, $2, $3}' /proc/loadavg)
             runtime=$(uptime -p)
             echo ""
             echo -e "${white}系统信息${re}"
@@ -65,6 +66,7 @@ while true; do
             echo -e "${white}物理内存: ${purple}${mem_info}${re}"
             echo -e "${white}虚拟内存: ${purple}${swap_info}${re}"
             echo -e "${white}硬盘占用: ${purple}${disk_info}${re}"
+            echo -e "${white}系统负载: ${purple}${loadavg}${re}"
             echo "------------------------"
             echo -e "${purple}$net_traffic${re}"
             echo "------------------------"
