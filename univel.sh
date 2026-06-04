@@ -36,7 +36,7 @@ while true; do
             cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
             cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
             cpu_cores=$(nproc)
-            mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
+            mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
             disk_info=$(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')
             country=$(curl -s ipinfo.io/country)
             city=$(curl -s ipinfo.io/city)
