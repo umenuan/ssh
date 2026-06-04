@@ -84,11 +84,11 @@ while true; do
             ;;
         2)
             clear
-            echo -e "${yellow}正在更新系统...${re}"
+            echo -e "${yellow}正在更新...${re}"
             apt update && apt upgrade -y
             apt install -y curl wget unzip sudo
             apt autoremove -y
-            echo -e "${green}系统更新完成！${re}"
+            echo -e "${green}更新完成！${re}"
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
             echo ""
@@ -108,21 +108,18 @@ while true; do
             ;;
         5)
             clear
-            echo -e "${yellow}正在运行HY2-V4脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
             echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         6)
             clear
-            echo -e "${yellow}正在运行HY2-V6脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
             echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
             ;;
         7)
             clear
-            echo -e "${yellow}正在运行vless+ws脚本...${re}"
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
             echo -e "${green}执行完成！返回主菜单...${re}"
             read -n 1 -s -r -p ""
