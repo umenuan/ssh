@@ -19,7 +19,7 @@ while true; do
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
-    read -p $'\033[1;91m请选择: \033[0m' choice
+    read -p $'\033[1;91m pick: \033[0m' choice
 
     case $choice in
         1)
@@ -40,7 +40,7 @@ while true; do
             current_time=$(date "+%Y-%m-%d %I:%M %p")
             runtime=$(uptime -p)
             echo ""
-            echo -e "${white}vps信息${re}"
+            echo -e "${white}vps info${re}"
             echo "=========="
             echo -e "${white}虚拟化: ${purple}${virt}${re}"
             echo -e "${white}主机名: ${purple}${hostname}${re}"
@@ -125,7 +125,7 @@ while true; do
             exit
             ;;
         *)
-            echo -e "${purple}无效输入!${re}"
+            echo -e "${purple}No!${re}"
             sleep 1
             ;;
     esac
