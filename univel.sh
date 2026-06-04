@@ -73,7 +73,7 @@ while true; do
             echo "------------------------"
             echo -e "${purple}$net_traffic${re}"
             echo "------------------------"
-            echo -e "${white}网络拥堵算法: ${purple}${congestion_algorithm} ${queue_algorithm}${re}"
+            echo -e "${white}拥堵算法: ${purple}${congestion_algorithm} ${queue_algorithm}${re}"
             echo "------------------------"
             echo -e "${white}IPv4地址: ${purple}${ipv4_address}${re}"
             echo -e "${white}IPv6地址: ${purple}${ipv6_address}${re}"
