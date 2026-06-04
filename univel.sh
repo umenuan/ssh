@@ -54,8 +54,7 @@ while true; do
             kernel_version=$(uname -r)
             congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
             queue_algorithm=$(sysctl -n net.core.default_qdisc)
-            os_info=$(lsb_release -ds 2>/dev/null)
-            [ -z "$os_info" ] && os_info="Debian $(cat /etc/debian_version 2>/dev/null)"
+            os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
             net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "总接收: %.2f %s\n总发送: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
             current_time=$(date "+%Y-%m-%d %I:%M %p")
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}')
