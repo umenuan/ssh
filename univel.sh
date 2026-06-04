@@ -8,15 +8,6 @@ yellow='\e[1;33m'
 purple='\e[1;35m'
 skyblue='\e[1;96m'
 
-# 仅允许root用户运行
-[[ $EUID -ne 0 ]] && echo -e "${red}请在root用户下运行脚本${re}" && exit 1
-
-# 获取IPv4和IPv6
-ip_address() {
-    ipv4_address=$(curl -s -m 2 ipv4.ip.sb)
-    ipv6_address=$(curl -s -m 2 ipv6.ip.sb)
-}
-
 while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
@@ -39,7 +30,8 @@ while true; do
     case $choice in
         1)
             clear
-            ip_address
+            ipv4_address=$(curl -s -m 2 ipv4.ip.sb)
+            ipv6_address=$(curl -s -m 2 ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
             cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
             cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
