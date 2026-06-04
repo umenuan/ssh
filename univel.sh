@@ -77,7 +77,7 @@ while true; do
             echo "------------------------"
             echo -e "${white}DNS: ${purple}${dns}${re}"
             echo "------------------------"
-            echo -e "${white}运行: ${purple}${runtime}${re}"
+            echo -e "${purple}${runtime}${re}"
             echo ""
             echo -e "${yellow}按任意键返回...${re}"
             read -n 1 -s -r -p ""
