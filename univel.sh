@@ -102,7 +102,7 @@ while true; do
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
             sysctl net.ipv4.tcp_congestion_control net.core.default_qdisc
-            echo -e "${green}BBR+FQ开启！${re}"
+            echo -e "${green}BBR+FQ OK！${re}"
             read -n 1 -s -r -p ""
             ;;
         5)
@@ -115,19 +115,19 @@ while true; do
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
             read -n 1 -s -r -p ""
             ;;
-         7)
+        7)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
             ;;
-         8)
+        8)
             clear
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh 4
             ;;
-         9)
+        9)
             clear
             bash <(curl -sL https://run.NodeQuality.com)
             ;;
-         0)
+        0)
             clear
             exit
             ;;
