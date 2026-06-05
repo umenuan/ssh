@@ -98,7 +98,10 @@ while true; do
             ;;
         4)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/bbr.sh)
+            echo "net.core.default_qdisc=fq" > /etc/sysctl.conf
+            echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+            sysctl --system >/dev/null 2>&1
+            sysctl net.ipv4.tcp_congestion_control net.core.default_qdisc
             read -n 1 -s -r -p ""
             ;;
         5)
