@@ -33,10 +33,10 @@ do_install(){
     PORT=$(rand_port)
     PASS=$(rand_hex)
     
-    echo "选择v4/v6"
+    echo "请选择!"
     echo "1) IPv4"
     echo "2) IPv6"
-    read -rp "请选择,默认v4:" IP_TYPE
+    read -rp "默认1:" IP_TYPE
     IP_TYPE=${IP_TYPE:-1}
 
     read -rp "端口 [${PORT}]: " p
