@@ -87,14 +87,15 @@ while true; do
             clear
             echo -e "${yellow}正在更新...${re}"
             apt update && apt upgrade -y
-            apt install -y curl wget unzip sudo
-            apt autoremove -y
-            echo -e "${green}更新完成！${re}"
+            apt autoremove -y && apt autoclean -y
+            apt install -y curl wget unzip sudo fail2ban
+            echo -e "${green} 更新完成！${re}"
             read -n 1 -s -r -p ""
             ;;
         3)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/panel.sh)
+            read -n 1 -s -r -p ""
             ;;
         4)
             clear
