@@ -89,7 +89,7 @@ while true; do
             apt update && apt upgrade -y
             apt autoremove -y && apt autoclean -y
             apt install -y curl wget unzip sudo fail2ban ufw openssl
-            echo -e "${green} 更新完成！${re}"
+            echo -e "${green}更新完成！${re}"
             read -n 1 -s -r -p ""
             ;;
         3)
