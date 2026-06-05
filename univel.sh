@@ -39,8 +39,7 @@ while true; do
             dns=$(awk '/^nameserver/{printf "%s ", $2} END {print ""}' /etc/resolv.conf)
             loadavg=$(awk '{print $1, $2, $3}' /proc/loadavg)
             tcp=$(ss -t | wc -l) && udp=$(ss -u | wc -l)
-            current_time=$(date "+%Y-%m-%d %H:%M:%S")
-            runtime=$(uptime -p)
+            current_time=$(date "+%Y-%m-%d %H:%M:%S")  && runtime=$(uptime -p)
             echo ""
             echo -e "${white}vps info${re}"
             echo "=========="
