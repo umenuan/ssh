@@ -1,6 +1,5 @@
 #!/bin/bash
 set -euo pipefail
-
 BIN=/usr/local/bin/hysteria
 CONF_DIR=/etc/hysteria
 CONF_FILE=$CONF_DIR/config.yaml
@@ -30,13 +29,12 @@ do_install(){
     fi
 
     local PORT PASS IP LINK
-
     PORT=$(rand_port)
     PASS=$(rand_hex)
 
     read -rp "端口 [${PORT}]: " p
     PORT=${p:-$PORT}
-
+    
     read -rp "密码 [${PASS}]: " p
     PASS=${p:-$PASS}
 
@@ -79,8 +77,7 @@ EOF
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1#HY2-${IP}"
 
     echo "$LINK" > "$NODE_FILE"
-
-    echo
+    
     echo -e "${GREEN}=========== 安装完成 ===========${NC}"
     echo -e "配置文件 : ${YELLOW}$CONF_FILE${NC}"
     echo -e "节点链接 : ${YELLOW}$LINK${NC}"
@@ -128,7 +125,6 @@ show_node(){
 
 while true; do
     clear
-
     echo -e "${GREEN}====== Hysteria2 一键管理脚本 ======${NC}"
     echo "1) 安装 Hysteria2"
     echo "2) 升级 Hysteria2"
