@@ -10,12 +10,11 @@ while true; do
     echo -e "${green} 2. Apt"
     echo -e "${green} 3. Panel"
     echo -e "${green} 4. BBR"
-    echo -e "${green} 5. HY2/4"
-    echo -e "${green} 6. HY2/6"
-    echo -e "${green} 7. Vless+ws"
-    echo -e "${green} 8. Reinstall"
-    echo -e "${green} 9. WARP+v4"
-    echo -e "${green} 10.NQ"
+    echo -e "${green} 5. HY2"
+    echo -e "${green} 6. Vless+ws"
+    echo -e "${green} 7. Reinstall"
+    echo -e "${green} 8. WARP+v4"
+    echo -e "${green} 9. NQ"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
@@ -113,27 +112,22 @@ while true; do
             ;;
         6)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy6.sh)
-            read -n 1 -s -r -p ""
-            ;;
-        7)
-            clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
             read -n 1 -s -r -p ""
             ;;
-         8)
+         7)
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
             ;;
-         9)
+         8)
             clear
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh 4
             ;;
-         10)
+         9)
             clear
             bash <(curl -sL https://run.NodeQuality.com)
             ;;
-        0)
+         0)
             clear
             exit
             ;;
