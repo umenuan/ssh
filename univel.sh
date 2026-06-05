@@ -103,7 +103,7 @@ while true; do
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
             sysctl net.ipv4.tcp_congestion_control net.core.default_qdisc
-            echo -e "${green}BBR+FQ开启了！${re}"
+            echo -e "${green}BBR+FQ开启！${re}"
             read -n 1 -s -r -p ""
             ;;
         5)
