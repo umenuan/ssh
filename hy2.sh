@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+
 BIN=/usr/local/bin/hysteria
 CONF_DIR=/etc/hysteria
 CONF_FILE=$CONF_DIR/config.yaml
