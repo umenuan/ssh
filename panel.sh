@@ -2,14 +2,14 @@
 
 while true; do
     clear
-    echo "===== dash ====="
+    echo "================="
     echo "1) 安装哪吒"
     echo "2) 卸载哪吒"
     echo "3) 安装 Komari"
     echo "4) 卸载 Komari"
-    echo "5) 3X-UI"
+    echo "5) 安装 3X-UI"
     echo "0) 退出脚本"
-    echo "======================="
+    echo "================="
     read -p "请输入选项 (1-5): " choice
 
     case $choice in
