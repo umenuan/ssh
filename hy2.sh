@@ -29,9 +29,15 @@ do_install(){
         chmod 600 "$KEY_FILE"
     fi
 
-    local PORT PASS IP LINK
+    local PORT PASS IP LINK IP_TYPE
     PORT=$(rand_port)
     PASS=$(rand_hex)
+    
+    echo "选择v4/v6"
+    echo "1) IPv4"
+    echo "2) IPv6"
+    read -rp "请选择,默认v4:" IP_TYPE
+    IP_TYPE=${IP_TYPE:-1}
 
     read -rp "端口 [${PORT}]: " p
     PORT=${p:-$PORT}
@@ -74,8 +80,13 @@ EOF
 
     ufw allow "$PORT/udp" >/dev/null 2>&1
 
+if [[ "$IP_TYPE" == "2" ]]; then
+    IP=$(curl -6 -s https://api64.ipify.org || curl -s ipv6.ip.sb)
+    LINK="hysteria2://${PASS}@[${IP}]:${PORT}?insecure=1#HY2-${IP}"
+else
     IP=$(curl -4 -s https://api.ipify.org || curl -s ipv4.ip.sb)
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1#HY2-${IP}"
+fi
 
     echo "$LINK" > "$NODE_FILE"
     
