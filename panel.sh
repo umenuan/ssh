@@ -10,7 +10,7 @@ while true; do
     echo "5) 安装 3X-UI"
     echo "0) 退出脚本"
     echo "================="
-    read -p "请输入选项 (1-5): " choice
+    read -p "Pick (1-5): " choice
 
     case $choice in
         1)
@@ -33,7 +33,7 @@ while true; do
             exit 0
             ;;
         *)
-            echo "无效输入，请重新选择。"
+            echo "No!"
             ;;
     esac
 
