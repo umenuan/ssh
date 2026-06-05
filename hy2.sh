@@ -32,7 +32,6 @@ do_install(){
     local PORT PASS IP LINK IP_TYPE
     PORT=$(rand_port)
     PASS=$(rand_hex)
-    
     echo "请选择!"
     echo "1) IPv4"
     echo "2) IPv6"
