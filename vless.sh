@@ -1,18 +1,7 @@
 #!/bin/bash
 
 # 颜色定义
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # 无颜色
-
-# 检查是否为 root
-if [[ $EUID -ne 0 ]]; then
-  echo -e "${RED}请使用 root 用户运行此脚本${NC}"
-  exit 1
-fi
+RED='\033[0;31m';GREEN='\033[0;32m';YELLOW='\033[1;33m';BLUE='\033[0;34m';CYAN='\033[0;36m';NC='\033[0m' # 无颜色
 
 is_xray_installed() {
   command -v xray >/dev/null 2>&1
