@@ -126,7 +126,7 @@ show_node(){
 
 while true; do
     clear
-    echo -e "${GREEN}====== Hysteria2 一键管理脚本 ======${NC}"
+    echo -e "${GREEN}====== Hysteria2 V6管理脚本 ======${NC}"
     echo "1) 安装 Hysteria2"
     echo "2) 升级 Hysteria2"
     echo "3) 卸载 Hysteria2"
