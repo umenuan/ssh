@@ -12,8 +12,8 @@ while true; do
     echo -e "${green} 4. BBR"
     echo -e "${green} 5. HY2"
     echo -e "${green} 6. vless+ws"
-    echo -e "${green} 7. Reinstall"
-    echo -e "${green} 8. Warp+v4"
+    echo -e "${green} 7. DD"
+    echo -e "${green} 8. Warp"
     echo -e "${green} 9. NQ"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
@@ -120,7 +120,7 @@ while true; do
             ;;
         8)
             clear
-            wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh 4
+            wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
             ;;
         9)
             clear
