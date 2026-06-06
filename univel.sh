@@ -12,7 +12,7 @@ while true; do
     echo -e "${green} 4. BBR"
     echo -e "${green} 5. HY2"
     echo -e "${green} 6. vless+ws"
-    echo -e "${green} 7. DD"
+    echo -e "${green} 7. DD13"
     echo -e "${green} 8. Warp"
     echo -e "${green} 9. NQ"
     echo "=========="
