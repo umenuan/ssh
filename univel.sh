@@ -41,7 +41,7 @@ while true; do
             tcp=$(ss -t | wc -l) && udp=$(ss -u | wc -l)
             current_time=$(date "+%Y-%m-%d %H:%M:%S")  && runtime=$(uptime -p)
             echo ""
-            echo -e "${white}vps info${re}"
+            echo -e "${white}系统信息${re}"
             echo "=========="
             echo -e "${white}虚拟化: ${purple}${virt}${re}"
             echo -e "${white}主机名: ${purple}${hostname}${re}"
