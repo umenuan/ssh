@@ -3,10 +3,10 @@
 while true; do
     clear
     echo "================="
-    echo "1) 安装哪吒"
-    echo "2) 卸载哪吒"
+    echo "1) 安装 Nezha"
+    echo "2) 卸载 Nezha Agent"
     echo "3) 安装 Komari"
-    echo "4) 卸载 Komari"
+    echo "4) 卸载 Komari Agent"
     echo "5) 安装 3X-UI"
     echo "6) 安装 Speedtest"
     echo "7) 安装 1Panel"
