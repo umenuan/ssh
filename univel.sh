@@ -14,7 +14,7 @@ while true; do
     echo -e "${green} 6. vless"
     echo -e "${green} 7. dd13"
     echo -e "${green} 8. warp"
-    echo -e "${green} 9. NQ"
+    echo -e "${green} 9. ns"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
