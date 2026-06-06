@@ -42,7 +42,7 @@ while true; do
             current_time=$(date "+%Y-%m-%d %H:%M:%S")  && runtime=$(uptime -p)
             echo ""
             echo -e "${white}系统信息${re}"
-            echo "=========="
+            echo "========"
             echo -e "${white}虚拟化: ${purple}${virt}${re}"
             echo -e "${white}主机名: ${purple}${hostname}${re}"
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
