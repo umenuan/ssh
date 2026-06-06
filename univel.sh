@@ -92,7 +92,7 @@ while true; do
             ;;
         3)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/common.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/often.sh)
             read -n 1 -s -r -p ""
             ;;
         4)
