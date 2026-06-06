@@ -8,6 +8,7 @@ while true; do
     echo "3) 安装 Komari"
     echo "4) 卸载 Komari"
     echo "5) 安装 3X-UI"
+    echo "6) 安装 Speedtest"
     echo "0) 退出脚本"
     echo "================="
     read -p "Pick (1-5): " choice
@@ -28,6 +29,9 @@ while true; do
         5)
             bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
             ;;
+        6)
+            bash <(curl -Ls https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh) && apt install speedtest -y            
+            ;;            
         0)
             echo "退出脚本..."
             exit 0
