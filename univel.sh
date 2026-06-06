@@ -132,7 +132,6 @@ while true; do
             ;;
         *)
             echo -e "${purple}No!${re}"
-            sleep 1
             ;;
     esac
 done
