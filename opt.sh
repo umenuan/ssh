@@ -9,6 +9,7 @@ while true; do
     echo "4) 卸载 Komari"
     echo "5) 安装 3X-UI"
     echo "6) 安装 Speedtest"
+    echo "7) 安装 1Panel"
     echo "0) 退出脚本"
     echo "================="
     read -p "Pick (1-5): " choice
@@ -31,7 +32,10 @@ while true; do
             ;;
         6)
             bash <(curl -Ls https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh) && apt install speedtest -y            
-            ;;            
+            ;;     
+        7)
+            bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"           
+            ;;
         0)
             echo "退出脚本..."
             exit 0
