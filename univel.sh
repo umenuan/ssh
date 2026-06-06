@@ -7,10 +7,10 @@ while true; do
     echo -e "${skyblue}  MY VPS${re}"
     echo "=========="
     echo -e "${green} 1. Info"
-    echo -e "${green} 2. Apt"
-    echo -e "${green} 3. Panel"
-    echo -e "${green} 4. BBR"
-    echo -e "${green} 5. HY2"
+    echo -e "${green} 2. apt"
+    echo -e "${green} 3. opt"
+    echo -e "${green} 4. bbr"
+    echo -e "${green} 5. hy2"
     echo -e "${green} 6. vless+ws"
     echo -e "${green} 7. DD13"
     echo -e "${green} 8. Warp"
@@ -92,7 +92,7 @@ while true; do
             ;;
         3)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/often.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/opt.sh)
             read -n 1 -s -r -p ""
             ;;
         4)
