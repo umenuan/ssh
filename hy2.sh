@@ -34,7 +34,7 @@ do_install(){
     PASS=$(rand_hex)
     echo "1) IPv4"
     echo "2) IPv6"
-    read -rp "1-2" IP_TYPE
+    read -rp "Pick 1-2?" IP_TYPE
     IP_TYPE=${IP_TYPE:-1}
 
     read -rp "端口 [${PORT}]: " p
