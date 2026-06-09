@@ -14,7 +14,7 @@ while true; do
     echo "9) 安装 Debian13"
     echo "0) 退出脚本"
     echo "================="
-    read -p "Pick (1-9): " choice
+    read -p "Pick : " choice
 
     case $choice in
         1)
