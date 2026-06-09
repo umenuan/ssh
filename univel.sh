@@ -10,9 +10,9 @@ while true; do
     echo -e "${green} 2. apt"
     echo -e "${green} 3. opt"
     echo -e "${green} 4. bbr"
-    echo -e "${green} 5. hy2"
-    echo -e "${green} 6. vless"
-    echo -e "${green} 7. dns"
+    echo -e "${green} 5. dns"
+    echo -e "${green} 6. hy2"
+    echo -e "${green} 7. vle"
     echo -e "${green} 8. warp"
     echo -e "${green} 9. NQ"
     echo "=========="
@@ -105,16 +105,6 @@ while true; do
             read -n 1 -s -r -p ""
             ;;
         5)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
-            read -n 1 -s -r -p ""
-            ;;
-        6)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
-            read -n 1 -s -r -p ""
-            ;;
-        7)
             echo -e "1) Cloudflare\n2) Google"
             read -rp "Pick [1-2]: " c
             case $c in
@@ -126,6 +116,16 @@ while true; do
             cat /etc/resolv.conf
             read -n 1 -s -r -p ""
             ;;
+        6)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/hy2.sh)
+            read -n 1 -s -r -p ""
+            ;;
+        7)
+            clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
+            read -n 1 -s -r -p ""
+            ;;       
         8)
             clear
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
