@@ -123,7 +123,8 @@ while true; do
             *) exit 1;;
             esac
             : >/etc/resolv.conf; for i in $dns; do echo "nameserver $i" >> /etc/resolv.conf; done
-            cat /etc/resolv.conf          
+            cat /etc/resolv.conf
+            read -n 1 -s -r -p ""
             ;;
         8)
             clear
