@@ -42,7 +42,6 @@ while true; do
             curl -fsSL https://get.docker.com | sudo sh           
             ;;
         9)
-            clear
             bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
             ;;
         0)
