@@ -12,7 +12,7 @@ while true; do
     echo -e "${green} 4. bbr"
     echo -e "${green} 5. hy2"
     echo -e "${green} 6. vless"
-    echo -e "${green} 7. dd13"
+    echo -e "${green} 7. dns"
     echo -e "${green} 8. warp"
     echo -e "${green} 9. NQ"
     echo "=========="
@@ -115,8 +115,15 @@ while true; do
             read -n 1 -s -r -p ""
             ;;
         7)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
+            echo -e "1) Cloudflare\n2) Google"
+            read -rp "Pick [1-2]: " c
+            case $c in
+            1) dns="1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001";;
+            2) dns="8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844";;
+            *) exit 1;;
+            esac
+            : >/etc/resolv.conf; for i in $dns; do echo "nameserver $i" >> /etc/resolv.conf; done
+            cat /etc/resolv.conf          
             ;;
         8)
             clear
