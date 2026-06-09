@@ -10,10 +10,11 @@ while true; do
     echo "5) 安装 3X-UI"
     echo "6) 安装 Speedtest"
     echo "7) 安装 1Panel"
-    echo "8) 切换 DNS"
+    echo "8) 安装 Docker"
+    echo "9) 切换 DNS"
     echo "0) 退出脚本"
     echo "================="
-    read -p "Pick (1-5): " choice
+    read -p "Pick (1-9): " choice
 
     case $choice in
         1)
@@ -38,6 +39,9 @@ while true; do
             bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"           
             ;;
         8)
+            curl -fsSL https://get.docker.com | sudo sh           
+            ;;
+        9)
             echo -e "1) Cloudflare\n2) Google"
             read -rp "Pick [1-2]: " c
             case $c in
