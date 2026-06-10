@@ -83,11 +83,11 @@ EOF
 
 do_uninstall(){
     echo -e "${RED}>>> 卸载 Hysteria2...${NC}"
-    systemctl stop "$SERVICE_NAME" 2>/dev/null || true
-    systemctl disable "$SERVICE_NAME" 2>/dev/null || true
-    [[ -f $CONF_FILE ]] && PORT=$(grep '^listen:' "$CONF_FILE" | grep -oE '[0-9]+')
-    rm -f "$UNIT_FILE"; systemctl daemon-reload
+    systemctl disable --now "$SERVICE_NAME" 2>/dev/null || true
     pkill -9 -f "hysteria server" 2>/dev/null || true
+    [[ -f $CONF_FILE ]] && PORT=$(grep '^listen:' "$CONF_FILE" | grep -oE '[0-9]+')
+    rm -f "$UNIT_FILE"
+    systemctl daemon-reload
     rm -rf "$CONF_DIR"
     bash <(curl -fsSL https://get.hy2.sh/) --remove >/dev/null 2>&1 || true
     [[ -n ${PORT:-} ]] && ufw delete allow "$PORT/udp" >/dev/null 2>&1 || true
