@@ -95,13 +95,13 @@ EOF
 config_xray() {
   echo -e "${CYAN}请输入以下配置参数，直接回车则使用默认值${NC}"
 
-  read -p "监听端口（默认 80）: " port
+  read -p "监听端口(默认80): " port
   [[ -z "$port" ]] && port=80
 
-  read -p "UUID（留空自动生成）: " uuid
+  read -p "UUID(留空自动生成): " uuid
   [[ -z "$uuid" ]] && uuid=$(cat /proc/sys/kernel/random/uuid)
 
-  read -p "WebSocket 路径（默认空）: " ws_path
+  read -p "WebSocket 路径(默认空): " ws_path
   [[ -z "$ws_path" ]] && ws_path="/"
 
   cat > /usr/local/etc/xray/config.json <<EOF
