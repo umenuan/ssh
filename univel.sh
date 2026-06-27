@@ -129,10 +129,12 @@ while true; do
         8)
             clear
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
+            read -n 1 -s -r -p ""
             ;;
         9)
             clear
             bash <(curl -sL https://run.NodeQuality.com)
+            read -n 1 -s -r -p ""
             ;;
         0)
             clear
