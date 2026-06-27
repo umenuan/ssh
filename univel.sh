@@ -112,7 +112,10 @@ while true; do
             2) dns="8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844";;
             *) exit 1;;
             esac
-            : >/etc/resolv.conf; for i in $dns; do echo "nameserver $i" >> /etc/resolv.conf; done
+            chattr -i /etc/resolv.conf
+            : >/etc/resolv.conf; 
+            for i in $dns; do echo "nameserver $i" >> /etc/resolv.conf; done
+            chattr +i /etc/resolv.conf;
             cat /etc/resolv.conf
             read -n 1 -s -r -p ""
             ;;
