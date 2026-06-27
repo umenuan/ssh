@@ -113,9 +113,9 @@ while true; do
             *) exit 1;;
             esac
             chattr -i /etc/resolv.conf
-            : >/etc/resolv.conf; 
+            : >/etc/resolv.conf
             for i in $dns; do echo "nameserver $i" >> /etc/resolv.conf; done
-            chattr +i /etc/resolv.conf;
+            chattr +i /etc/resolv.conf
             cat /etc/resolv.conf
             read -n 1 -s -r -p ""
             ;;
