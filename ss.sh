@@ -37,23 +37,39 @@ get_public_ip() {
     curl -4 -s --max-time 5 https://api.ipify.org
 }
 
+get_public_ipv6() {
+    curl -6 -s --max-time 5 https://api64.ipify.org
+}
+
 print_connection_info() {
-    local ip="$1" port="$2" method="$3" password="$4"
-    local b64 ss_link
+    local ip4="$1" ip6="$2" port="$3" method="$4" password="$5"
+    local b64 link4 link6 tag
 
     b64=$(echo -n "${method}:${password}" | base64 -w0)
-    ss_link="ss://${b64}@${ip}:${port}#Shadowsocks-$(hostname)"
+    tag="Shadowsocks-$(hostname)"
 
     {
         echo "=============================="
         echo "Shadowsocks-Rust 安装完成"
-        echo "服务器: ${ip}"
         echo "端口: ${port}"
         echo "加密: ${method}"
         echo "密码: ${password}"
         echo "------------------------------"
-        echo "分享链接:"
-        echo "${ss_link}"
+        if [[ -n "$ip4" ]]; then
+            link4="ss://${b64}@${ip4}:${port}#${tag}-v4"
+            echo "IPv4 地址: ${ip4}"
+            echo "IPv4 分享链接:"
+            echo "${link4}"
+            echo "------------------------------"
+        fi
+        if [[ -n "$ip6" ]]; then
+            link6="ss://${b64}@[${ip6}]:${port}#${tag}-v6"
+            echo "IPv6 地址: ${ip6}"
+            echo "IPv6 分享链接:"
+            echo "${link6}"
+            echo "------------------------------"
+        fi
+        echo "说明: 服务端已同时监听 IPv4 / IPv6，两个链接可互换使用"
         echo "=============================="
     } | tee "$INFO_FILE"
 }
@@ -69,7 +85,7 @@ install_shadowsocks() {
     check_deps
 
     echo "获取最新版本..."
-    local version file url port method key ip
+    local version file url port method key ip ip6
     version=$(get_latest_version)
     if [[ -z "$version" || "$version" == "null" ]]; then
         echo "获取版本信息失败，请检查网络"
@@ -102,11 +118,22 @@ install_shadowsocks() {
     mkdir -p "$CONFIG_DIR"
     cat >"$CONFIG_FILE" <<EOF
 {
-    "server":"0.0.0.0",
-    "server_port":${port},
-    "method":"${method}",
-    "password":"${key}",
-    "mode":"tcp_only"
+    "servers":[
+        {
+            "server":"0.0.0.0",
+            "server_port":${port},
+            "method":"${method}",
+            "password":"${key}",
+            "mode":"tcp_only"
+        },
+        {
+            "server":"::",
+            "server_port":${port},
+            "method":"${method}",
+            "password":"${key}",
+            "mode":"tcp_only"
+        }
+    ]
 }
 EOF
     chmod 600 "$CONFIG_FILE"
@@ -136,8 +163,9 @@ EOF
     fi
 
     ip=$(get_public_ip)
+    ip6=$(get_public_ipv6)
     echo
-    print_connection_info "$ip" "$port" "$method" "$key"
+    print_connection_info "$ip" "$ip6" "$port" "$method" "$key"
 
     rm -rf "$TMP_DIR"
     echo
@@ -154,7 +182,7 @@ uninstall_shadowsocks() {
     [[ "$confirm" != "y" && "$confirm" != "Y" ]] && { echo "已取消"; return; }
 
     local port=""
-    [[ -f "$CONFIG_FILE" ]] && port=$(jq -r .server_port "$CONFIG_FILE" 2>/dev/null)
+    [[ -f "$CONFIG_FILE" ]] && port=$(jq -r '.servers[0].server_port' "$CONFIG_FILE" 2>/dev/null)
 
     systemctl stop shadowsocks 2>/dev/null || true
     systemctl disable shadowsocks 2>/dev/null || true
@@ -216,12 +244,13 @@ show_current_info() {
     if [[ -f "$INFO_FILE" ]]; then
         cat "$INFO_FILE"
     elif [[ -f "$CONFIG_FILE" ]]; then
-        local port method key ip
-        port=$(jq -r .server_port "$CONFIG_FILE")
-        method=$(jq -r .method "$CONFIG_FILE")
-        key=$(jq -r .password "$CONFIG_FILE")
+        local port method key ip ip6
+        port=$(jq -r '.servers[0].server_port' "$CONFIG_FILE")
+        method=$(jq -r '.servers[0].method' "$CONFIG_FILE")
+        key=$(jq -r '.servers[0].password' "$CONFIG_FILE")
         ip=$(get_public_ip)
-        print_connection_info "$ip" "$port" "$method" "$key"
+        ip6=$(get_public_ipv6)
+        print_connection_info "$ip" "$ip6" "$port" "$method" "$key"
     else
         echo "未找到连接信息，请先安装"
     fi
