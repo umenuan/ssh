@@ -13,7 +13,7 @@ while true; do
     echo -e "${green} 5. dns"
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. vle"
-    echo -e "${green} 8. warp"
+    echo -e "${green} 8. ss"
     echo -e "${green} 9. NQ"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
@@ -132,7 +132,7 @@ while true; do
             ;;       
         8)
             clear
-            wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ss.sh)
             read -n 1 -s -r -p ""
             ;;
         9)
