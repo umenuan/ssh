@@ -3,17 +3,17 @@
 while true; do
     clear
     echo "================="
-    echo "1)  安装 Nezha"
-    echo "2)  卸载 Nezha Agent"
-    echo "3)  安装 Komari"
-    echo "4)  卸载 Komari Agent"
-    echo "5)  安装 3X-UI"
-    echo "6)  安装 Speedtest"
-    echo "7)  安装 1Panel"
-    echo "8)  安装 Docker"
-    echo "9)  安装 Debian13"
+    echo " 1) 安装 Nezha"
+    echo " 2) 卸载 Nezha Agent"
+    echo " 3) 安装 Komari"
+    echo " 4) 卸载 Komari Agent"
+    echo " 5) 安装 3X-UI"
+    echo " 6) 安装 Speedtest"
+    echo " 7) 安装 1Panel"
+    echo " 8) 安装 Docker"
+    echo " 9) 安装 Debian13"
     echo "10) 安装 Warp"
-    echo "0)  退出脚本"
+    echo " 0) 退出脚本"
     echo "================="
     read -p "Pick : " choice
 
