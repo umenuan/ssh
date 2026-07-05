@@ -21,7 +21,7 @@ check_root() {
 }
 
 check_deps() {
-    apt install -y curl wget jq openssl tar
+    apt install -y curl wget jq openssl tar xz-utils
 }
 
 get_latest_version() {
