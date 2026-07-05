@@ -1,4 +1,4 @@
-#!/usr/bin
+#!/bin/bash
 #
 # Shadowsocks-Rust 管理脚本
 # 功能：安装 / 卸载 / 升级 / 退出
