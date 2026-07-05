@@ -21,7 +21,6 @@ check_root() {
 }
 
 check_deps() {
-    apt update -qq
     apt install -y curl wget jq openssl tar >/dev/null
 }
 
