@@ -71,8 +71,12 @@ install_shadowsocks() {
     echo "获取最新版本..."
     local version file url port method key ip
     version=$(get_latest_version)
+    if [[ -z "$version" || "$version" == "null" ]]; then
+        echo "获取版本信息失败，请检查网络"
+        return 1
+    fi
 
-    file="shadowsocks-${version#v}.${TARGET}.tar.xz"
+    file="shadowsocks-${version}.${TARGET}.tar.xz"
     url="https://github.com/shadowsocks/shadowsocks-rust/releases/download/${version}/${file}"
 
     rm -rf "$TMP_DIR"
@@ -80,7 +84,10 @@ install_shadowsocks() {
     cd "$TMP_DIR"
 
     echo "下载 ${file} ..."
-    wget -q --show-progress "$url"
+    if ! wget -q --show-progress "$url"; then
+        echo "下载失败: $url"
+        return 1
+    fi
     tar -xf "$file"
 
     install -m 755 ssserver "${BIN_DIR}/"
@@ -177,8 +184,12 @@ upgrade_shadowsocks() {
     echo "获取最新版本..."
     local version file url
     version=$(get_latest_version)
+    if [[ -z "$version" || "$version" == "null" ]]; then
+        echo "获取版本信息失败，请检查网络"
+        return 1
+    fi
 
-    file="shadowsocks-${version#v}.${TARGET}.tar.xz"
+    file="shadowsocks-${version}.${TARGET}.tar.xz"
     url="https://github.com/shadowsocks/shadowsocks-rust/releases/download/${version}/${file}"
 
     rm -rf "$TMP_DIR"
@@ -186,7 +197,10 @@ upgrade_shadowsocks() {
     cd "$TMP_DIR"
 
     echo "下载 ${file} ..."
-    wget -q --show-progress "$url"
+    if ! wget -q --show-progress "$url"; then
+        echo "下载失败: $url"
+        return 1
+    fi
     tar -xf "$file"
 
     systemctl stop shadowsocks
