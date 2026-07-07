@@ -13,6 +13,7 @@ while true; do
     echo " 8) 安装 Docker"
     echo " 9) 安装 Debian13"
     echo "10) 安装 Warp"
+    echo "11) 测试 NQ"
     echo " 0) 退出脚本"
     echo "================="
     read -p "Pick : " choice
@@ -47,6 +48,9 @@ while true; do
             ;;
         10)
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
+            ;;
+        11)
+            bash <(curl -sL https://run.NodeQuality.com)
             ;;
         0)
             echo "退出脚本..."
