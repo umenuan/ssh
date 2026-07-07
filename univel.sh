@@ -132,7 +132,7 @@ while true; do
             ;;       
         8)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ss.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/sb.sh)
             read -n 1 -s -r -p ""
             ;;
         9)
