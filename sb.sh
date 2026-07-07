@@ -22,13 +22,6 @@ warn()  { echo -e "${YELLOW}[警告]${NC} $*"; }
 err()   { echo -e "${RED}[错误]${NC} $*"; }
 
 # ------------------------- 基础检查 -------------------------
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        err "请使用 root 用户运行本脚本"
-        exit 1
-    fi
-}
-
 check_arch() {
     local arch
     arch=$(uname -m)
@@ -478,5 +471,4 @@ main_menu() {
 }
 
 # ------------------------- 入口 -------------------------
-check_root
 main_menu
