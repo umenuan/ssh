@@ -14,7 +14,7 @@ while true; do
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
     echo -e "${green} 8. sb"
-    echo -e "${green} 9. NQ"
+    echo -e "${green} 9. zz"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
@@ -137,7 +137,6 @@ while true; do
             ;;
         9)
             clear
-            bash <(curl -sL https://run.NodeQuality.com)
             read -n 1 -s -r -p ""
             ;;
         0)
