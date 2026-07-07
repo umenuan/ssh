@@ -12,7 +12,7 @@ while true; do
     echo -e "${green} 4. bbr"
     echo -e "${green} 5. dns"
     echo -e "${green} 6. hy2"
-    echo -e "${green} 7. vle"
+    echo -e "${green} 7. ss"
     echo -e "${green} 8. ss"
     echo -e "${green} 9. NQ"
     echo "=========="
@@ -127,7 +127,7 @@ while true; do
             ;;
         7)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/vless.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ss.sh)
             read -n 1 -s -r -p ""
             ;;       
         8)
