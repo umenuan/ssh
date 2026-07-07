@@ -13,7 +13,7 @@ while true; do
     echo -e "${green} 5. dns"
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
-    echo -e "${green} 8. ss"
+    echo -e "${green} 8. sb"
     echo -e "${green} 9. NQ"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
