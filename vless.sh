@@ -3,6 +3,9 @@
 # 颜色定义
 RED='\033[0;31m';GREEN='\033[0;32m';YELLOW='\033[1;33m';BLUE='\033[0;34m';CYAN='\033[0;36m';NC='\033[0m' # 无颜色
 
+CONFIG_PATH="/usr/local/etc/xray/config.json"
+LINK_INFO_PATH="/usr/local/etc/xray/link_info.env"
+
 is_xray_installed() {
   command -v xray >/dev/null 2>&1
 }
@@ -95,16 +98,33 @@ EOF
 config_xray() {
   echo -e "${CYAN}请输入以下配置参数，直接回车则使用默认值${NC}"
 
-  read -p "监听端口(默认80): " port
-  [[ -z "$port" ]] && port=80
+  read -p "监听端口(默认443): " port
+  [[ -z "$port" ]] && port=443
 
   read -p "UUID(留空自动生成): " uuid
   [[ -z "$uuid" ]] && uuid=$(cat /proc/sys/kernel/random/uuid)
 
-  read -p "WebSocket 路径(默认空): " ws_path
-  [[ -z "$ws_path" ]] && ws_path="/"
+  read -p "伪装目标域名 dest(默认 www.microsoft.com:443): " dest
+  [[ -z "$dest" ]] && dest="www.microsoft.com:443"
 
-  cat > /usr/local/etc/xray/config.json <<EOF
+  # serverName 取 dest 中的域名部分（不含端口）
+  server_name="${dest%%:*}"
+  read -p "REALITY serverName(默认 ${server_name}): " sn_input
+  [[ -n "$sn_input" ]] && server_name="$sn_input"
+
+  echo -e "${BLUE}生成 REALITY 密钥对...${NC}"
+  key_output=$(xray x25519)
+  private_key=$(echo "$key_output" | grep -i "Private" | awk '{print $NF}')
+  public_key=$(echo "$key_output" | grep -i "Public" | awk '{print $NF}')
+
+  if [[ -z "$private_key" || -z "$public_key" ]]; then
+    echo -e "${RED}密钥生成失败，请检查 xray 版本是否支持 x25519 命令${NC}"
+    exit 1
+  fi
+
+  short_id=$(openssl rand -hex 8)
+
+  cat > "$CONFIG_PATH" <<EOF
 {
   "inbounds": [
     {
@@ -114,16 +134,27 @@ config_xray() {
         "clients": [
           {
             "id": "$uuid",
+            "flow": "xtls-rprx-vision",
             "level": 0,
-            "email": "vless-nontls"
+            "email": "vless-reality"
           }
         ],
         "decryption": "none"
       },
       "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "$ws_path"
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "dest": "$dest",
+          "xver": 0,
+          "serverNames": [
+            "$server_name"
+          ],
+          "privateKey": "$private_key",
+          "shortIds": [
+            "$short_id"
+          ]
         }
       }
     }
@@ -137,7 +168,16 @@ config_xray() {
 }
 EOF
 
-  echo -e "${GREEN}配置文件已生成: /usr/local/etc/xray/config.json${NC}"
+  # 保存生成链接所需的信息，供 generate_vless_link 使用
+  cat > "$LINK_INFO_PATH" <<EOF
+port=$port
+uuid=$uuid
+public_key=$public_key
+short_id=$short_id
+server_name=$server_name
+EOF
+
+  echo -e "${GREEN}配置文件已生成: $CONFIG_PATH${NC}"
 }
 
 
@@ -149,14 +189,20 @@ start_xray() {
 }
 
 generate_vless_link() {
+  if [[ ! -f "$LINK_INFO_PATH" ]]; then
+    echo -e "${RED}未找到配置信息，请先执行安装/配置(选项1)${NC}"
+    return
+  fi
+  source "$LINK_INFO_PATH"
+
   local ip
   ip=$(curl -s https://ipinfo.io/ip)
-  local clean_path="${ws_path#/}"  # 去掉前导斜杠
-  local vless_link="vless://${uuid}@${ip}:${port}?type=ws&security=none&path=/${clean_path}#vless-ws-nontls"
 
-  echo -e "\n${YELLOW}========== VLESS 链接 ==========${NC}"
+  local vless_link="vless://${uuid}@${ip}:${port}?security=reality&encryption=none&pbk=${public_key}&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=${server_name}&sid=${short_id}#vless-reality"
+
+  echo -e "\n${YELLOW}========== VLESS REALITY 链接 ==========${NC}"
   echo -e "${CYAN}$vless_link${NC}"
-  echo -e "${YELLOW}===============================${NC}\n"
+  echo -e "${YELLOW}=========================================${NC}\n"
 }
 
 update_xray() {
@@ -218,9 +264,9 @@ uninstall_xray() {
 
 main() {
   while true; do
-    echo -e "${BLUE}========= Xray VLESS+WS 一键管理脚本 =========${NC}"
+    echo -e "${BLUE}========= Xray VLESS+REALITY 一键管理脚本 =========${NC}"
     echo -e "  ${YELLOW}请选择操作:${NC}"
-    echo -e "  ${GREEN}1.${NC} 安装 VLESS+WS"
+    echo -e "  ${GREEN}1.${NC} 安装 VLESS+REALITY"
     echo -e "  ${GREEN}2.${NC} 更新 Xray"
     echo -e "  ${GREEN}3.${NC} 卸载 Xray"
     echo -e "  ${GREEN}0.${NC} 退出脚本"
