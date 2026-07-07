@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # sing-box 一键安装/升级/卸载管理脚本
 # 适用系统: Debian (amd64)
