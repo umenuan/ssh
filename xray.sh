@@ -84,7 +84,7 @@ config_reality() {
 
     echo ""
     echo "请选择用于伪装的目标网站 (SNI)，建议使用可正常访问 TLS1.3 的站点:"
-    echo "  1) www.microsoft.com"
+    echo "  1) www.tesla.com"
     echo "  2) www.apple.com"
     echo "  3) addons.mozilla.org"
     echo "  4) 自定义"
@@ -93,7 +93,7 @@ config_reality() {
         2) SNI="www.apple.com" ;;
         3) SNI="addons.mozilla.org" ;;
         4) read -rp "请输入自定义 SNI 域名: " SNI ;;
-        *) SNI="www.microsoft.com" ;;
+        *) SNI="www.apple.com" ;;
     esac
 
     UUID=$(gen_uuid)
