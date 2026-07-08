@@ -97,9 +97,15 @@ config_reality() {
 
     UUID=$(gen_uuid)
     KEY_PAIR=$("$XRAY_BIN" x25519)
-    PRIVATE_KEY=$(echo "$KEY_PAIR" | awk '/Private key:/{print $3}')
-    PUBLIC_KEY=$(echo "$KEY_PAIR" | awk '/Public key:/{print $3}')
+    PRIVATE_KEY=$(echo "$KEY_PAIR" | awk -F': ' '/PrivateKey/{print $2}')
+    PUBLIC_KEY=$(echo "$KEY_PAIR" | awk -F': ' '/PublicKey/{print $2}')
     SHORT_ID=$(openssl rand -hex 8)
+
+    if [[ -z "$PRIVATE_KEY" || -z "$PUBLIC_KEY" ]]; then
+        log_err "x25519 密钥生成失败，请检查 Xray 版本输出格式: 
+${KEY_PAIR}"
+        exit 1
+    fi
 
     cat > "$XRAY_CONFIG" <<EOF
 {
