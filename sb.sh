@@ -2,7 +2,8 @@
 #
 # sing-box 一键安装/升级/卸载管理脚本
 # 适用系统: Debian (amd64)
-# 支持协议: Hysteria2 / Shadowsocks 2022
+# 支持协议: Hysteria2 / Shadowsocks 2022 / 两者同时安装
+# 全部监听 "::" 双栈地址，同时兼容 IPv4 / IPv6
 #
 set -o pipefail
 
@@ -12,6 +13,8 @@ SB_DIR="/etc/sing-box"
 SB_CONF="${SB_DIR}/config.json"
 SB_META="${SB_DIR}/.meta"          # 记录协议类型/端口/密码等，供菜单读取
 SB_PORTS_FILE="${SB_DIR}/.ports"   # 记录放行的防火墙端口，卸载时回收
+SB_SYSCTL_FLAG="${SB_DIR}/.sysctl_ipv6_changed"
+SB_SYSCTL_CONF="/etc/sysctl.d/99-sing-box-ipv6.conf"
 SB_SERVICE="/etc/systemd/system/sing-box.service"
 GITHUB_REPO="SagerNet/sing-box"
 
@@ -41,6 +44,38 @@ install_deps() {
     info "检查并安装依赖 (curl wget tar openssl coreutils)..."
     apt-get update -y >/dev/null 2>&1
     apt-get install -y curl wget tar openssl ca-certificates >/dev/null 2>&1
+}
+
+# ------------------------- IPv6 双栈检测 -------------------------
+# sing-box 监听 "::" 时，只要内核 net.ipv6.bindv6only=0（Linux 默认值），
+# 该 socket 即同时接受 IPv4 / IPv6 连接，无需为两个协议族分别监听。
+check_ipv6_dualstack() {
+    if [[ ! -f /proc/sys/net/ipv6/conf/all/disable_ipv6 ]]; then
+        warn "系统内核未启用 IPv6 支持，节点将仅可通过 IPv4 访问"
+        return
+    fi
+    local bindv6only
+    bindv6only=$(sysctl -n net.ipv6.bindv6only 2>/dev/null)
+    if [[ "$bindv6only" == "1" ]]; then
+        warn "检测到 net.ipv6.bindv6only=1，会导致监听地址 :: 无法同时接受 IPv4 连接"
+        read -rp "是否自动修改为双栈模式 (0)? [Y/n]: " fix
+        if [[ "$fix" != "n" && "$fix" != "N" ]]; then
+            echo "net.ipv6.bindv6only = 0" > "$SB_SYSCTL_CONF"
+            sysctl -p "$SB_SYSCTL_CONF" >/dev/null 2>&1
+            touch "$SB_SYSCTL_FLAG"
+            info "已设置 net.ipv6.bindv6only=0，端口将同时支持 IPv4 / IPv6"
+        else
+            warn "已跳过，节点可能仅支持单一协议族"
+        fi
+    fi
+}
+
+revert_ipv6_dualstack() {
+    if [[ -f "$SB_SYSCTL_FLAG" ]]; then
+        rm -f "$SB_SYSCTL_CONF"
+        sysctl -w net.ipv6.bindv6only=1 >/dev/null 2>&1
+        info "已恢复 net.ipv6.bindv6only 系统默认设置"
+    fi
 }
 
 # ------------------------- 获取最新版本并下载 -------------------------
@@ -90,6 +125,23 @@ rand_port() {
     shuf -i 20000-60000 -n1
 }
 
+port_in_use_by_us() {
+    # 检查端口是否已被本次安装中其它协议占用
+    local p=$1
+    [[ "$p" == "${HY2_PORT:-}" ]] && return 0
+    [[ "$p" == "${SS_PORT:-}" ]] && return 0
+    return 1
+}
+
+pick_free_port() {
+    local p
+    p=$(rand_port)
+    while port_in_use_by_us "$p"; do
+        p=$(rand_port)
+    done
+    echo "$p"
+}
+
 open_firewall_port() {
     local port=$1
     local proto=$2  # tcp/udp
@@ -117,8 +169,12 @@ close_firewall_ports() {
     done < "$SB_PORTS_FILE"
 }
 
-get_public_ip() {
-    curl -s4 --max-time 5 ip.sb || curl -s4 --max-time 5 ifconfig.me || echo "YOUR_SERVER_IP"
+get_public_ipv4() {
+    curl -s4 --max-time 5 https://ip.sb 2>/dev/null || curl -s4 --max-time 5 https://ifconfig.me 2>/dev/null
+}
+
+get_public_ipv6() {
+    curl -s6 --max-time 5 https://ip.sb 2>/dev/null || curl -s6 --max-time 5 https://ifconfig.co 2>/dev/null
 }
 
 write_systemd_service() {
@@ -144,29 +200,31 @@ EOF
 }
 
 # ------------------------- 协议配置：Hysteria2 -------------------------
+# 配置结果写入全局变量 HY2_INBOUND_JSON，并将 meta 追加到 SB_META
 configure_hysteria2() {
     mkdir -p "$SB_DIR"
-    read -rp "请输入 Hysteria2 监听端口 (回车随机): " port
-    [[ -z "$port" ]] && port=$(rand_port)
+    read -rp "[Hysteria2] 请输入监听端口 (回车随机): " port
+    [[ -z "$port" ]] && port=$(pick_free_port)
+    HY2_PORT="$port"
 
-    read -rp "请输入连接密码 (回车随机生成): " password
+    read -rp "[Hysteria2] 请输入连接密码 (回车随机生成): " password
     if [[ -z "$password" ]]; then
         password=$("$SB_BIN" generate rand 16 --base64 2>/dev/null)
         [[ -z "$password" ]] && password=$(openssl rand -base64 16)
     fi
 
     echo
-    echo "证书方式:"
+    echo "[Hysteria2] 证书方式:"
     echo "  1) 自签名证书 (客户端需开启 跳过证书验证/insecure)"
     echo "  2) 使用已有域名 + Let's Encrypt 自动申请证书 (需域名已解析到本机，且80端口未占用)"
     read -rp "请选择 [1-2, 默认1]: " cert_choice
     cert_choice=${cert_choice:-1}
 
-    local tls_block=""
-    local sni="www.bing.com"
-
+    local tls_block sni insecure_flag
     if [[ "$cert_choice" == "2" ]]; then
         read -rp "请输入你的域名: " domain
+        sni="$domain"
+        insecure_flag="0"
         tls_block=$(cat <<EOF
     "tls": {
       "enabled": true,
@@ -179,9 +237,9 @@ configure_hysteria2() {
     }
 EOF
 )
-        sni="$domain"
-        insecure_flag="0"
     else
+        sni="www.bing.com"
+        insecure_flag="1"
         mkdir -p "${SB_DIR}/cert"
         openssl ecparam -genkey -name prime256v1 -out "${SB_DIR}/cert/private.key" >/dev/null 2>&1
         openssl req -new -x509 -days 3650 -key "${SB_DIR}/cert/private.key" \
@@ -195,48 +253,44 @@ EOF
     }
 EOF
 )
-        insecure_flag="1"
     fi
 
-    cat > "$SB_CONF" <<EOF
-{
-  "log": { "level": "info", "timestamp": true },
-  "inbounds": [
+    # listen "::" 为双栈监听地址，同时接受 IPv4 / IPv6 连接
+    HY2_INBOUND_JSON=$(cat <<EOF
     {
       "type": "hysteria2",
       "tag": "hy2-in",
       "listen": "::",
-      "listen_port": ${port},
+      "listen_port": ${HY2_PORT},
       "users": [ { "password": "${password}" } ],
 ${tls_block}
     }
-  ],
-  "outbounds": [ { "type": "direct", "tag": "direct" } ]
-}
 EOF
+)
 
-    open_firewall_port "$port" udp
+    open_firewall_port "$HY2_PORT" udp
 
-    cat > "$SB_META" <<EOF
-PROTOCOL=hysteria2
-PORT=${port}
-PASSWORD=${password}
-SNI=${sni}
-INSECURE=${insecure_flag}
-EOF
+    {
+        echo "HY2_PORT=${HY2_PORT}"
+        echo "HY2_PASSWORD=${password}"
+        echo "HY2_SNI=${sni}"
+        echo "HY2_INSECURE=${insecure_flag}"
+    } >> "$SB_META"
 
-    info "Hysteria2 配置完成"
+    info "Hysteria2 配置完成 (端口: ${HY2_PORT})"
 }
 
 # ------------------------- 协议配置：Shadowsocks 2022 -------------------------
+# 配置结果写入全局变量 SS_INBOUND_JSON，并将 meta 追加到 SB_META
 configure_shadowsocks() {
     mkdir -p "$SB_DIR"
-    echo "请选择加密方式:"
+    echo "[Shadowsocks 2022] 请选择加密方式:"
     echo "  1) 2022-blake3-aes-128-gcm  (密钥16字节)"
     echo "  2) 2022-blake3-aes-256-gcm  (密钥32字节)"
     echo "  3) 2022-blake3-chacha20-poly1305 (密钥32字节)"
     read -rp "请选择 [1-3, 默认1]: " m
     m=${m:-1}
+    local method keylen
     case "$m" in
         1) method="2022-blake3-aes-128-gcm"; keylen=16 ;;
         2) method="2022-blake3-aes-256-gcm"; keylen=32 ;;
@@ -244,40 +298,57 @@ configure_shadowsocks() {
         *) method="2022-blake3-aes-128-gcm"; keylen=16 ;;
     esac
 
-    read -rp "请输入监听端口 (回车随机): " port
-    [[ -z "$port" ]] && port=$(rand_port)
+    read -rp "[Shadowsocks 2022] 请输入监听端口 (回车随机): " port
+    [[ -z "$port" ]] && port=$(pick_free_port)
+    SS_PORT="$port"
 
+    local password
     password=$("$SB_BIN" generate rand "${keylen}" --base64 2>/dev/null)
     [[ -z "$password" ]] && password=$(openssl rand -base64 "${keylen}")
+
+    # listen "::" 为双栈监听地址，同时接受 IPv4 / IPv6 连接
+    SS_INBOUND_JSON=$(cat <<EOF
+    {
+      "type": "shadowsocks",
+      "tag": "ss-in",
+      "listen": "::",
+      "listen_port": ${SS_PORT},
+      "method": "${method}",
+      "password": "${password}"
+    }
+EOF
+)
+
+    open_firewall_port "$SS_PORT" tcp
+    open_firewall_port "$SS_PORT" udp
+
+    {
+        echo "SS_PORT=${SS_PORT}"
+        echo "SS_PASSWORD=${password}"
+        echo "SS_METHOD=${method}"
+    } >> "$SB_META"
+
+    info "Shadowsocks 2022 配置完成 (端口: ${SS_PORT})"
+}
+
+# ------------------------- 汇总生成最终配置文件 -------------------------
+build_final_config() {
+    local inbounds=()
+    [[ -n "${HY2_INBOUND_JSON:-}" ]] && inbounds+=("$HY2_INBOUND_JSON")
+    [[ -n "${SS_INBOUND_JSON:-}" ]] && inbounds+=("$SS_INBOUND_JSON")
+
+    local joined
+    joined=$(IFS=,; echo "${inbounds[*]}")
 
     cat > "$SB_CONF" <<EOF
 {
   "log": { "level": "info", "timestamp": true },
   "inbounds": [
-    {
-      "type": "shadowsocks",
-      "tag": "ss-in",
-      "listen": "::",
-      "listen_port": ${port},
-      "method": "${method}",
-      "password": "${password}"
-    }
+${joined}
   ],
   "outbounds": [ { "type": "direct", "tag": "direct" } ]
 }
 EOF
-
-    open_firewall_port "$port" tcp
-    open_firewall_port "$port" udp
-
-    cat > "$SB_META" <<EOF
-PROTOCOL=shadowsocks2022
-PORT=${port}
-PASSWORD=${password}
-METHOD=${method}
-EOF
-
-    info "Shadowsocks 2022 配置完成"
 }
 
 # ------------------------- 展示节点信息 -------------------------
@@ -288,34 +359,44 @@ show_node_info() {
     fi
     # shellcheck disable=SC1090
     source "$SB_META"
-    local ip
-    ip=$(get_public_ip)
+
+    local ipv4 ipv6
+    ipv4=$(get_public_ipv4)
+    ipv6=$(get_public_ipv6)
 
     echo
     echo -e "${CYAN}================= 节点信息 =================${NC}"
-    if [[ "$PROTOCOL" == "hysteria2" ]]; then
-        echo "协议     : Hysteria2"
-        echo "地址     : ${ip}"
-        echo "端口     : ${PORT}"
-        echo "密码     : ${PASSWORD}"
-        echo "SNI      : ${SNI}"
-        echo "跳过验证 : $([[ $INSECURE == 1 ]] && echo 是 || echo 否)"
+    [[ -n "$ipv4" ]] && echo "IPv4 地址 : ${ipv4}"
+    [[ -n "$ipv6" ]] && echo "IPv6 地址 : ${ipv6}"
+    [[ -z "$ipv4" && -z "$ipv6" ]] && warn "未能自动获取公网 IP，请手动替换链接中的地址"
+    echo "-----------------------------------------------"
+
+    if [[ -n "${HY2_PORT:-}" ]]; then
+        echo -e "${GREEN}[Hysteria2]${NC}"
+        echo "端口     : ${HY2_PORT}"
+        echo "密码     : ${HY2_PASSWORD}"
+        echo "SNI      : ${HY2_SNI}"
+        echo "跳过验证 : $([[ $HY2_INSECURE == 1 ]] && echo 是 || echo 否)"
+        [[ -n "$ipv4" ]] && echo "IPv4 链接 : hysteria2://${HY2_PASSWORD}@${ipv4}:${HY2_PORT}/?sni=${HY2_SNI}&insecure=${HY2_INSECURE}#HY2-IPv4"
+        [[ -n "$ipv6" ]] && echo "IPv6 链接 : hysteria2://${HY2_PASSWORD}@[${ipv6}]:${HY2_PORT}/?sni=${HY2_SNI}&insecure=${HY2_INSECURE}#HY2-IPv6"
         echo
-        echo "分享链接:"
-        echo "hysteria2://${PASSWORD}@${ip}:${PORT}/?sni=${SNI}&insecure=${INSECURE}#Hysteria2"
-    elif [[ "$PROTOCOL" == "shadowsocks2022" ]]; then
-        local userinfo b64
-        userinfo="${METHOD}:${PASSWORD}"
-        b64=$(echo -n "$userinfo" | base64 -w0)
-        echo "协议     : Shadowsocks 2022"
-        echo "地址     : ${ip}"
-        echo "端口     : ${PORT}"
-        echo "密码     : ${PASSWORD}"
-        echo "加密方式 : ${METHOD}"
-        echo
-        echo "分享链接:"
-        echo "ss://${b64}@${ip}:${PORT}#SS2022"
     fi
+
+    if [[ -n "${SS_PORT:-}" ]]; then
+        local userinfo b64
+        userinfo="${SS_METHOD}:${SS_PASSWORD}"
+        b64=$(echo -n "$userinfo" | base64 -w0)
+        echo -e "${GREEN}[Shadowsocks 2022]${NC}"
+        echo "端口     : ${SS_PORT}"
+        echo "密码     : ${SS_PASSWORD}"
+        echo "加密方式 : ${SS_METHOD}"
+        [[ -n "$ipv4" ]] && echo "IPv4 链接 : ss://${b64}@${ipv4}:${SS_PORT}#SS2022-IPv4"
+        [[ -n "$ipv6" ]] && echo "IPv6 链接 : ss://${b64}@[${ipv6}]:${SS_PORT}#SS2022-IPv6"
+        echo
+    fi
+
+    echo "提示: 服务端口以双栈 (::) 模式监听，IPv4/IPv6 均可直连；"
+    echo "      如需切换协议族，直接把链接中的地址替换为对应的另一个即可，端口和密码不变。"
     echo -e "${CYAN}=============================================${NC}"
     echo
 }
@@ -331,21 +412,39 @@ do_install() {
     check_arch
     install_deps
     mkdir -p "$SB_DIR"
-    rm -f "$SB_PORTS_FILE"
+    rm -f "$SB_PORTS_FILE" "$SB_META"
+    unset HY2_PORT HY2_INBOUND_JSON SS_PORT SS_INBOUND_JSON
     download_singbox
+    check_ipv6_dualstack
 
     echo
     echo "请选择要安装的协议:"
     echo "  1) Hysteria2"
     echo "  2) Shadowsocks 2022"
-    read -rp "请选择 [1-2]: " proto_choice
+    echo "  3) 同时安装 Hysteria2 + Shadowsocks 2022 (双协议)"
+    read -rp "请选择 [1-3]: " proto_choice
 
+    local protocols=""
     case "$proto_choice" in
-        1) configure_hysteria2 ;;
-        2) configure_shadowsocks ;;
+        1)
+            configure_hysteria2
+            protocols="hysteria2"
+            ;;
+        2)
+            configure_shadowsocks
+            protocols="shadowsocks2022"
+            ;;
+        3)
+            configure_hysteria2
+            configure_shadowsocks
+            protocols="hysteria2 shadowsocks2022"
+            ;;
         *) err "无效选择"; return ;;
     esac
 
+    echo "PROTOCOLS=\"${protocols}\"" >> "$SB_META"
+
+    build_final_config
     write_systemd_service
     systemctl enable sing-box >/dev/null 2>&1
     systemctl restart sing-box
@@ -388,6 +487,9 @@ do_uninstall() {
 
     info "回收防火墙放行规则..."
     close_firewall_ports
+
+    info "恢复系统 IPv6 相关设置（如有修改）..."
+    revert_ipv6_dualstack
 
     info "删除 systemd 服务文件..."
     rm -f "$SB_SERVICE"
