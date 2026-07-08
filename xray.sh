@@ -2,7 +2,7 @@
 #############################################################
 #  Xray 一键管理脚本 (Debian / amd64)
 #  支持协议: VLESS+Reality / VLESS+WS+TLS
-#  功能菜单: 1安装 2升级 3卸载(不留痕迹) 4查看节点 5退出
+#  功能菜单: 1安装 2升级 3卸载 4查看节点 5退出
 #############################################################
 
 set -o pipefail
@@ -75,10 +75,11 @@ gen_uuid() {
 }
 
 # ------------------------- Reality 配置 -------------------------
+# 生成后会设置全局变量: REALITY_INBOUND (json片段) REALITY_INFO (节点信息文本)
 config_reality() {
     get_ip
     echo ""
-    read -rp "请输入监听端口 (回车随机 10000-60000): " PORT
+    read -rp "[Reality] 请输入监听端口 (回车随机 10000-60000): " PORT
     [[ -z "$PORT" ]] && PORT=$(shuf -i 10000-60000 -n 1)
 
     echo ""
@@ -107,54 +108,43 @@ ${KEY_PAIR}"
         exit 1
     fi
 
-    cat > "$XRAY_CONFIG" <<EOF
+    REALITY_INBOUND=$(cat <<EOF
 {
-  "log": {
-    "loglevel": "warning",
-    "access": "${XRAY_LOG_DIR}/access.log",
-    "error": "${XRAY_LOG_DIR}/error.log"
-  },
-  "inbounds": [
-    {
-      "listen": "0.0.0.0",
-      "port": ${PORT},
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          {
-            "id": "${UUID}",
-            "flow": "xtls-rprx-vision"
-          }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "show": false,
-          "dest": "${SNI}:443",
-          "xver": 0,
-          "serverNames": ["${SNI}"],
-          "privateKey": "${PRIVATE_KEY}",
-          "shortIds": ["${SHORT_ID}"]
-        }
+  "listen": "0.0.0.0",
+  "port": ${PORT},
+  "protocol": "vless",
+  "tag": "reality-in",
+  "settings": {
+    "clients": [
+      {
+        "id": "${UUID}",
+        "flow": "xtls-rprx-vision"
       }
+    ],
+    "decryption": "none"
+  },
+  "streamSettings": {
+    "network": "tcp",
+    "security": "reality",
+    "realitySettings": {
+      "show": false,
+      "dest": "${SNI}:443",
+      "xver": 0,
+      "serverNames": ["${SNI}"],
+      "privateKey": "${PRIVATE_KEY}",
+      "shortIds": ["${SHORT_ID}"]
     }
-  ],
-  "outbounds": [
-    { "protocol": "freedom" },
-    { "protocol": "blackhole", "tag": "block" }
-  ]
+  }
 }
 EOF
+)
 
     open_port "$PORT"
 
     NODE_NAME="Reality-$(hostname)"
-    LINK="vless://${UUID}@${IP}:${PORT}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=${SNI}&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&type=tcp&headerType=none#${NODE_NAME}"
+    REALITY_LINK="vless://${UUID}@${IP}:${PORT}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=${SNI}&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&type=tcp&headerType=none#${NODE_NAME}"
 
-    cat > "$INFO_FILE" <<EOF
+    REALITY_INFO=$(cat <<EOF
 协议类型: VLESS + Reality
 服务器IP: ${IP}
 端口:     ${PORT}
@@ -165,14 +155,17 @@ PublicKey: ${PUBLIC_KEY}
 ShortId:  ${SHORT_ID}
 --------------------------------------------------
 节点链接:
-${LINK}
+${REALITY_LINK}
 EOF
+)
 }
 
 # ------------------------- WS+TLS 配置 -------------------------
+# 生成后会设置全局变量: WSTLS_INBOUND (json片段) WSTLS_INFO (节点信息文本)
+# 参数: $1 - 可选，需要避开的保留端口(用于双协议安装时避免和 Reality 冲突)
 config_ws_tls() {
     echo ""
-    read -rp "请输入已解析到本机 IP 的域名(必须提前将域名 A 记录指向本服务器): " DOMAIN
+    read -rp "[WS+TLS] 请输入已解析到本机 IP 的域名(必须提前将域名 A 记录指向本服务器): " DOMAIN
     if [[ -z "$DOMAIN" ]]; then
         log_err "域名不能为空"
         exit 1
@@ -193,9 +186,20 @@ config_ws_tls() {
         [[ "${WSPATH:0:1}" != "/" ]] && WSPATH="/${WSPATH}"
     fi
 
-    # 临时放行 80/443 用于签发证书
+    RESERVED_PORT="${1:-}"
+    while true; do
+        read -rp "请输入服务监听端口 (回车默认 443): " WSTLS_PORT
+        [[ -z "$WSTLS_PORT" ]] && WSTLS_PORT=443
+        if [[ -n "$RESERVED_PORT" && "$WSTLS_PORT" == "$RESERVED_PORT" ]]; then
+            log_err "该端口已被 Reality 占用 (${RESERVED_PORT})，请更换一个端口"
+            continue
+        fi
+        break
+    done
+
+    # 临时放行 80 端口用于证书签发，并放行实际服务端口
     open_port 80
-    open_port 443
+    open_port "$WSTLS_PORT"
     systemctl stop xray >/dev/null 2>&1
 
     if [[ ! -f "${ACME_HOME}/acme.sh" ]]; then
@@ -218,62 +222,76 @@ config_ws_tls() {
 
     UUID=$(gen_uuid)
 
-    cat > "$XRAY_CONFIG" <<EOF
+    WSTLS_INBOUND=$(cat <<EOF
 {
-  "log": {
-    "loglevel": "warning",
-    "access": "${XRAY_LOG_DIR}/access.log",
-    "error": "${XRAY_LOG_DIR}/error.log"
+  "listen": "0.0.0.0",
+  "port": ${WSTLS_PORT},
+  "protocol": "vless",
+  "tag": "ws-tls-in",
+  "settings": {
+    "clients": [
+      { "id": "${UUID}" }
+    ],
+    "decryption": "none"
   },
-  "inbounds": [
-    {
-      "listen": "0.0.0.0",
-      "port": 443,
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          { "id": "${UUID}" }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "ws",
-        "security": "tls",
-        "tlsSettings": {
-          "certificates": [
-            {
-              "certificateFile": "${CERT_DIR}/cert.crt",
-              "keyFile": "${CERT_DIR}/private.key"
-            }
-          ]
-        },
-        "wsSettings": {
-          "path": "${WSPATH}",
-          "headers": { "Host": "${DOMAIN}" }
+  "streamSettings": {
+    "network": "ws",
+    "security": "tls",
+    "tlsSettings": {
+      "certificates": [
+        {
+          "certificateFile": "${CERT_DIR}/cert.crt",
+          "keyFile": "${CERT_DIR}/private.key"
         }
-      }
+      ]
+    },
+    "wsSettings": {
+      "path": "${WSPATH}",
+      "headers": { "Host": "${DOMAIN}" }
     }
-  ],
-  "outbounds": [
-    { "protocol": "freedom" },
-    { "protocol": "blackhole", "tag": "block" }
-  ]
+  }
 }
 EOF
+)
 
     NODE_NAME="WS-TLS-$(hostname)"
-    LINK="vless://${UUID}@${DOMAIN}:443?encryption=none&security=tls&type=ws&host=${DOMAIN}&path=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))" "$WSPATH" 2>/dev/null || echo "$WSPATH")&sni=${DOMAIN}#${NODE_NAME}"
+    ENC_PATH=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))" "$WSPATH" 2>/dev/null || echo "$WSPATH")
+    WSTLS_LINK="vless://${UUID}@${DOMAIN}:${WSTLS_PORT}?encryption=none&security=tls&type=ws&host=${DOMAIN}&path=${ENC_PATH}&sni=${DOMAIN}#${NODE_NAME}"
 
-    cat > "$INFO_FILE" <<EOF
+    WSTLS_INFO=$(cat <<EOF
 协议类型: VLESS + WS + TLS
 域名:     ${DOMAIN}
-端口:     443
+端口:     ${WSTLS_PORT}
 UUID:     ${UUID}
 WS路径:   ${WSPATH}
 --------------------------------------------------
 节点链接:
-${LINK}
+${WSTLS_LINK}
 EOF
+)
+}
+
+# ------------------------- 组装最终配置文件 -------------------------
+# 用法: assemble_config "$inbound1" ["$inbound2" ...]
+assemble_config() {
+    local inbounds_json
+    inbounds_json=$(printf '%s\n' "$@" | jq -s '.')
+    if [[ $? -ne 0 ]]; then
+        log_err "inbound 配置拼装失败，请检查 jq 是否正常安装"
+        exit 1
+    fi
+    jq -n \
+        --argjson inbounds "$inbounds_json" \
+        --arg access "${XRAY_LOG_DIR}/access.log" \
+        --arg error "${XRAY_LOG_DIR}/error.log" \
+        '{
+            log: { loglevel: "warning", access: $access, error: $error },
+            inbounds: $inbounds,
+            outbounds: [
+                { protocol: "freedom" },
+                { protocol: "blackhole", tag: "block" }
+            ]
+        }' > "$XRAY_CONFIG"
 }
 
 # ------------------------- systemd 服务 -------------------------
@@ -304,12 +322,35 @@ do_install() {
     echo "请选择要安装的协议:"
     echo "  1) VLESS + Reality  (推荐，无需域名，抗封锁能力强)"
     echo "  2) VLESS + WS + TLS (需要一个已解析的域名)"
-    read -rp "请输入选项 [1/2]: " proto
+    echo "  3) 同时安装两种协议 (Reality + WS+TLS，共用一个 Xray 进程)"
+    read -rp "请输入选项 [1/2/3]: " proto
 
     case "$proto" in
-        1) config_reality ;;
-        2) config_ws_tls ;;
-        *) log_err "无效选项"; return ;;
+        1)
+            config_reality
+            assemble_config "$REALITY_INBOUND"
+            echo "$REALITY_INFO" > "$INFO_FILE"
+            ;;
+        2)
+            config_ws_tls
+            assemble_config "$WSTLS_INBOUND"
+            echo "$WSTLS_INFO" > "$INFO_FILE"
+            ;;
+        3)
+            config_reality
+            REALITY_PORT="$PORT"
+            config_ws_tls "$REALITY_PORT"
+            assemble_config "$REALITY_INBOUND" "$WSTLS_INBOUND"
+            {
+                echo "$REALITY_INFO"
+                echo "===================================================="
+                echo "$WSTLS_INFO"
+            } > "$INFO_FILE"
+            ;;
+        *)
+            log_err "无效选项"
+            return
+            ;;
     esac
 
     restart_service
@@ -401,7 +442,7 @@ main_menu() {
         echo -e "${BLUE}=========================================${NC}"
         echo -e "${BLUE}      Xray 一键管理脚本 (Debian/amd64)   ${NC}"
         echo -e "${BLUE}=========================================${NC}"
-        echo "  1. 安装 Xray (Reality / WS+TLS)"
+        echo "  1. 安装 Xray (Reality / WS+TLS / 双协议同装)"
         echo "  2. 升级 Xray 内核"
         echo "  3. 完全卸载 Xray (清除所有痕迹)"
         echo "  4. 查看当前节点信息"
