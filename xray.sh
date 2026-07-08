@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #############################################################
 #  Xray 一键管理脚本 (Debian / amd64)
 #  支持协议: VLESS+Reality / VLESS+WS+TLS
