@@ -14,7 +14,7 @@ while true; do
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
     echo -e "${green} 8. sb"
-    echo -e "${green} 9. zz"
+    echo -e "${green} 9. dd"
     echo "=========="
     echo -e "${green} 0. Exit ${re}"
     echo "=========="
@@ -137,6 +137,7 @@ while true; do
             ;;
         9)
             clear
+            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
             read -n 1 -s -r -p ""
             ;;
         0)
