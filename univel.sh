@@ -137,6 +137,7 @@ while true; do
             ;;
         9)
             clear
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/xray.sh)
             read -n 1 -s -r -p ""
             ;;
         0)
