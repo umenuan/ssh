@@ -11,7 +11,7 @@ while true; do
     echo " 6) 安装 Speedtest"
     echo " 7) 安装 1Panel"
     echo " 8) 安装 Docker"
-    echo " 9) 安装 Debian13"
+    echo " 9) 安装 Debian"
     echo "10) 安装 Warp"
     echo "11) 测试 NQ"
     echo " 0) 退出脚本"
@@ -44,7 +44,7 @@ while true; do
             curl -fsSL https://get.docker.com | sudo sh           
             ;;
         9)
-            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian 13
+            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian
             ;;
         10)
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
