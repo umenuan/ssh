@@ -16,7 +16,7 @@ while true; do
     echo -e "${green} 8. sb"
     echo -e "${green} 9. xx"
     echo "=========="
-    echo -e "${green} 0. Exit ${re}"
+    echo -e "${green} 0. exit ${re}"
     echo "=========="
     read -p $'\033[1;91m Pick: \033[0m' choice
 
