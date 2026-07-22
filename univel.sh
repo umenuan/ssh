@@ -86,7 +86,7 @@ while true; do
             clear
             echo -e "${yellow}正在更新...${re}"
             apt update && apt upgrade -y
-            apt autoremove -y && apt autoclean -y
+            apt autoremove --purge -y && apt clean && apt autoclean
             apt install -y curl wget unzip sudo ufw openssl
             echo -e "${green}更新完成！${re}"
             read -n 1 -s -r -p ""
