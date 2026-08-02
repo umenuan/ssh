@@ -23,8 +23,7 @@ while true; do
     case $choice in
         1)
             clear
-            ipv4=$(curl -s ipv4.ip.sb)
-            ipv6=$(curl -s ipv6.ip.sb)
+            ipv4=$(curl -s ipv4.ip.sb);ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
             #cpu_usage=$(awk '{u=$2+$3+$4+$6+$7+$8;t=u+$5;if(NR==1){u1=u;t1=t}else printf"%.2f%%\n",(u-u1)*100/(t-t1)}' <(grep '^cpu ' /proc/stat) <(sleep 1;grep '^cpu ' /proc/stat))
             cpu_cores=$(nproc);virt=$(systemd-detect-virt)
@@ -100,7 +99,7 @@ while true; do
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
             sysctl net.ipv4.tcp_congestion_control net.core.default_qdisc
-            echo -e "${green}BBR+FQ OK！${re}"
+            echo -e "${green}BBR+FQ is OK！${re}"
             read -n 1 -s -r -p ""
             ;;
         5)
@@ -140,6 +139,7 @@ while true; do
             chattr -i /etc/resolv.conf
             echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844" > /etc/resolv.conf
             chattr +i /etc/resolv.conf
+            echo -e "${green}BBR+FQ+DNS is OK！${re}"
             read -n 1 -s -r -p ""
             ;;
         0)
