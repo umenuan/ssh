@@ -137,7 +137,9 @@ while true; do
             echo "net.core.default_qdisc=fq" > /etc/sysctl.conf
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
+            chattr -i /etc/resolv.conf
             echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844" > /etc/resolv.conf
+            chattr +i /etc/resolv.conf
             read -n 1 -s -r -p ""
             ;;
         0)
