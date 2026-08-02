@@ -14,7 +14,7 @@ while true; do
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
     echo -e "${green} 8. sb"
-    echo -e "${green} 9. xx"
+    echo -e "${green} 9. init"
     echo "=========="
     echo -e "${green} 0. exit ${re}"
     echo "=========="
@@ -134,8 +134,10 @@ while true; do
             read -n 1 -s -r -p ""
             ;;
         9)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/xray.sh)
+            echo "net.core.default_qdisc=fq" > /etc/sysctl.conf
+            echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+            sysctl --system >/dev/null 2>&1
+            echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844" > /etc/resolv.conf
             read -n 1 -s -r -p ""
             ;;
         0)
