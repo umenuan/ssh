@@ -25,7 +25,6 @@ while true; do
             clear
             ipv4=$(curl -s ipv4.ip.sb);ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
-            #cpu_usage=$(awk '{u=$2+$3+$4+$6+$7+$8;t=u+$5;if(NR==1){u1=u;t1=t}else printf"%.2f%%\n",(u-u1)*100/(t-t1)}' <(grep '^cpu ' /proc/stat) <(sleep 1;grep '^cpu ' /proc/stat))
             cpu_cores=$(nproc);virt=$(systemd-detect-virt)
             cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
@@ -52,7 +51,6 @@ while true; do
             echo -e "${white}CPU型号: ${purple}${cpu_info}${re}"
             echo -e "${white}CPU核心: ${purple}${cpu_cores}${re}"
             echo -e "${white}CPU频率: ${purple}${cpu_freq}${re}"
-            #echo -e "${white}CPU占用: ${purple}${cpu_usage}${re}"
             echo "------------------------"
             echo -e "${white}TCP|UDP: ${purple}${tcp}|${udp}${re}"
             echo "------------------------"
