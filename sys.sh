@@ -8,7 +8,7 @@ do
     echo "       Debian 系统查询工具"
     echo "================================"
     echo "1. 系统信息"
-    echo "2. CPU / 内存"
+    echo "2. CPU内存"
     echo "3. 磁盘空间"
     echo "4. 目录占用"
     echo "5. 进程"
