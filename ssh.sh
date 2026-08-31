@@ -13,7 +13,7 @@ while true; do
     echo -e "${green} 5. dns"
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
-    echo -e "${green} 8. sb"
+    echo -e "${green} 8. sh"
     echo -e "${green} 9. ok"
     echo "=========="
     echo -e "${green} 0. exit ${re}"
@@ -127,7 +127,7 @@ while true; do
             ;;       
         8)
             clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/sb.sh)
+            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ssh.sh)
             read -n 1 -s -r -p ""
             ;;
         9)
