@@ -1,6 +1,6 @@
 #!/bin/bash
 
-re='\e[0m'; red='\e[1;91m'; white='\e[1;97m'; green='\e[1;32m'; yellow='\e[1;33m'; purple='\e[1;35m'; skyblue='\e[1;96m'
+re='\e[0m'; red='\e[1;31m'; white='\e[1;30m'; green='\e[1;32m'; yellow='\e[1;33m'; purple='\e[1;35m'; skyblue='\e[1;34m'
 
 while true; do
     clear
@@ -13,7 +13,7 @@ while true; do
     echo -e "${green} 5. dns"
     echo -e "${green} 6. hy2"
     echo -e "${green} 7. ss"
-    echo -e "${green} 8. sh"
+    echo -e "${green} 8. rb"
     echo -e "${green} 9. ok"
     echo "=========="
     echo -e "${green} 0. exit ${re}"
@@ -126,9 +126,7 @@ while true; do
             read -n 1 -s -r -p ""
             ;;       
         8)
-            clear
-            bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ssh.sh)
-            read -n 1 -s -r -p ""
+            reboot
             ;;
         9)
             echo "net.core.default_qdisc=fq" > /etc/sysctl.conf
