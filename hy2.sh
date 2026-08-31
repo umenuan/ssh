@@ -33,6 +33,8 @@ do_install(){
     read -rp "端口 [${PORT}]: " p; PORT=${p:-$PORT}
     read -rp "密码 [${PASS}]: " p; PASS=${p:-$PASS}
 
+    pinSHA256=$(openssl x509 -noout -fingerprint -sha256 -in "$CERT_FILE" | cut -d= -f2)
+
     cat > "$CONF_FILE" <<EOF
 listen: ":$PORT"
 auth:
@@ -41,6 +43,7 @@ auth:
 tls:
   cert: "$CERT_FILE"
   key: "$KEY_FILE"
+  pinSHA256: "$pinSHA256"
 masquerade:
   type: proxy
   proxy:
