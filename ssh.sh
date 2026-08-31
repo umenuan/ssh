@@ -43,35 +43,34 @@ while true; do
             echo -e "${white}虚拟化: ${purple}${virt}${re}"
             echo -e "${white}主机名: ${purple}${hostname}${re}"
             echo -e "${white}运营商: ${purple}${isp_info}${re}"
-            
+            echo ""
             echo -e "${white}系统版本: ${purple}${os_info}${re}"
             echo -e "${white}内核版本: ${purple}${kernel_version}${re}"
-            
+            echo ""
             echo -e "${white}CPU架构: ${purple}${cpu_arch}${re}"
             echo -e "${white}CPU型号: ${purple}${cpu_info}${re}"
             echo -e "${white}CPU核心: ${purple}${cpu_cores}${re}"
             echo -e "${white}CPU频率: ${purple}${cpu_freq}${re}"
-            
+            echo ""
             echo -e "${white}TCP|UDP: ${purple}${tcp}|${udp}${re}"
-            
+            echo ""
             echo -e "${white}物理内存: ${purple}${mem_info}${re}"
             echo -e "${white}虚拟内存: ${purple}${swap_info}${re}"
             echo -e "${white}硬盘占用: ${purple}${disk_info}${re}"
             echo -e "${white}系统负载: ${purple}${loadavg}${re}"
-            
+            echo ""
             echo -e "${purple}$net_traffic${re}"
-            
+            echo ""
             echo -e "${white}调度: ${purple}${congestion} ${queue}${re}"
-            
+            echo ""
             echo -e "${white}IPv4: ${purple}${ipv4}${re}"
             echo -e "${white}IPv6: ${purple}${ipv6}${re}"
-            
+            echo ""
             echo -e "${white}地理位置: ${purple}${country} $city${re}"
             echo -e "${white}系统时间: ${purple}${current_time}${re}"
-
-                        
+            echo ""          
             echo -e "${white}DNS: ${purple}${dns}${re}"
-            
+            echo ""
             echo -e "${purple}${runtime}${re}"
             echo ""
             echo -e "${yellow}按任意键返回...${re}"
