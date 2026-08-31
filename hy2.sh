@@ -79,7 +79,7 @@ EOF
     echo "$LINK" > "$NODE_FILE"
     echo -e "${GREEN}=========== 安装完成 ===========${NC}"
     echo -e "配置文件 : ${YELLOW}$CONF_FILE${NC}"
-    echo -e "节点链接 : ${YELLOW}$LINK${NC}"
+    echo -e "${YELLOW}$LINK${NC}"
     echo -e "保存位置 : ${YELLOW}$NODE_FILE${NC}"
     echo -e "${GREEN}================================${NC}"
 }
