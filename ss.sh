@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Shadowsocks-Rust 管理脚本
-# 功能：安装 / 卸载 / 升级 / 退出
+# Shadowsocks-Rust manage
 
 set -o pipefail
 
@@ -12,13 +11,6 @@ BIN_DIR="/usr/local/bin"
 TMP_DIR="/tmp/ssrust"
 INFO_FILE="${CONFIG_DIR}/connection-info.txt"
 TARGET="x86_64-unknown-linux-gnu"
-
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        echo "请使用 root 运行此脚本"
-        exit 1
-    fi
-}
 
 check_deps() {
     apt install -y curl wget jq openssl tar xz-utils
@@ -49,45 +41,45 @@ print_connection_info() {
 
     {
         echo "=============================="
-        echo "Shadowsocks-Rust 安装完成"
-        echo "端口: ${port}"
-        echo "加密: ${method}"
-        echo "密码: ${password}"
+        echo "Shadowsocks-Rust ok"
+        echo "    port: ${port}"
+        echo "  method: ${method}"
+        echo "password: ${password}"
         echo "------------------------------"
         if [[ -n "$ip4" ]]; then
             link4="ss://${b64}@${ip4}:${port}#${tag}-v4"
-            echo "IPv4 地址: ${ip4}"
-            echo "IPv4 分享链接:"
+            echo "IPv4: ${ip4}"
+            echo "IPv4 Link:"
             echo "${link4}"
             echo "------------------------------"
         fi
         if [[ -n "$ip6" ]]; then
             link6="ss://${b64}@[${ip6}]:${port}#${tag}-v6"
-            echo "IPv6 地址: ${ip6}"
-            echo "IPv6 分享链接:"
+            echo "IPv6: ${ip6}"
+            echo "IPv6 Link:"
             echo "${link6}"
             echo "------------------------------"
         fi
-        echo "说明: 服务端已同时监听 IPv4 / IPv6，两个链接可互换使用"
+        echo "IPv4 / IPv6 is OK!"
         echo "=============================="
     } | tee "$INFO_FILE"
 }
 
 install_shadowsocks() {
     if is_installed; then
-        echo "检测到已安装 Shadowsocks-Rust。"
-        read -rp "是否重新安装？这将覆盖现有配置 (y/N): " confirm
+        echo "Shadowsocks-Rust Installed"
+        read -rp "Reinstall ? (y/N): " confirm
         [[ "$confirm" != "y" && "$confirm" != "Y" ]] && return
         systemctl stop shadowsocks 2>/dev/null || true
     fi
 
     check_deps
 
-    echo "获取最新版本..."
+    echo "get_latest_version..."
     local version file url port method key ip ip6
     version=$(get_latest_version)
     if [[ -z "$version" || "$version" == "null" ]]; then
-        echo "获取版本信息失败，请检查网络"
+        echo "No!"
         return 1
     fi
 
@@ -98,9 +90,9 @@ install_shadowsocks() {
     mkdir -p "$TMP_DIR"
     cd "$TMP_DIR"
 
-    echo "下载 ${file} ..."
+    echo "download ${file} ..."
     if ! wget -q --show-progress "$url"; then
-        echo "下载失败: $url"
+        echo "error: $url"
         return 1
     fi
     tar -xf "$file"
@@ -108,7 +100,7 @@ install_shadowsocks() {
     install -m 755 ssserver "${BIN_DIR}/"
     install -m 755 sslocal "${BIN_DIR}/"
 
-    read -rp "请输入监听端口 (留空则随机生成): " port
+    read -rp "enter port: " port
     [[ -z "$port" ]] && port=$(shuf -i 10000-60000 -n 1)
 
     method="2022-blake3-aes-256-gcm"
@@ -158,7 +150,6 @@ EOF
 
     if command -v ufw >/dev/null 2>&1; then
         ufw allow "${port}/tcp" >/dev/null 2>&1
-        echo "已在 ufw 中放行端口 ${port}/tcp"
     fi
 
     ip=$(get_public_ip)
@@ -168,17 +159,14 @@ EOF
 
     rm -rf "$TMP_DIR"
     echo
-    echo "安装完成！"
+    echo "ok！"
 }
 
 uninstall_shadowsocks() {
     if ! is_installed; then
-        echo "未检测到安装，无需卸载"
+        echo "Installation not detected!"
         return
     fi
-
-    read -rp "确认要完全卸载 Shadowsocks-Rust 吗？(y/N): " confirm
-    [[ "$confirm" != "y" && "$confirm" != "Y" ]] && { echo "已取消"; return; }
 
     local port=""
     [[ -f "$CONFIG_FILE" ]] && port=$(jq -r '.servers[0].server_port' "$CONFIG_FILE" 2>/dev/null)
@@ -194,25 +182,24 @@ uninstall_shadowsocks() {
 
     if [[ -n "$port" && "$port" != "null" ]] && command -v ufw >/dev/null 2>&1; then
         ufw delete allow "${port}/tcp" >/dev/null 2>&1
-        echo "已移除端口 ${port}/tcp 的防火墙规则"
     fi
 
-    echo "卸载完成，所有文件与服务已清理干净。"
+    echo "Uninstallation complete."
 }
 
 upgrade_shadowsocks() {
     if ! is_installed; then
-        echo "未检测到已安装的 Shadowsocks-Rust，请先安装"
+        echo "Shadowsocks-Rust not installed"
         return
     fi
 
     check_deps
 
-    echo "获取最新版本..."
+    echo "get_latest_version..."
     local version file url
     version=$(get_latest_version)
     if [[ -z "$version" || "$version" == "null" ]]; then
-        echo "获取版本信息失败，请检查网络"
+        echo "error"
         return 1
     fi
 
@@ -223,9 +210,9 @@ upgrade_shadowsocks() {
     mkdir -p "$TMP_DIR"
     cd "$TMP_DIR"
 
-    echo "下载 ${file} ..."
+    echo "download ${file} ..."
     if ! wget -q --show-progress "$url"; then
-        echo "下载失败: $url"
+        echo "error: $url"
         return 1
     fi
     tar -xf "$file"
@@ -236,7 +223,7 @@ upgrade_shadowsocks() {
     systemctl start shadowsocks
 
     rm -rf "$TMP_DIR"
-    echo "升级完成，当前版本: ${version}"
+    echo "Upgrade complete: ${version}"
 }
 
 show_current_info() {
@@ -251,38 +238,37 @@ show_current_info() {
         ip6=$(get_public_ipv6)
         print_connection_info "$ip" "$ip6" "$port" "$method" "$key"
     else
-        echo "未找到连接信息，请先安装"
+        echo "Install first."
     fi
 }
 
 show_menu() {
     clear
     echo "=================================="
-    echo "   Shadowsocks-Rust 管理脚本"
+    echo "   Shadowsocks-Rust "
     echo "=================================="
-    echo "  1. 安装"
-    echo "  2. 卸载"
-    echo "  3. 升级"
-    echo "  4. 查看"
-    echo "  5. 退出"
+    echo "  1. install"
+    echo "  2. uninstall"
+    echo "  3. upgrade"
+    echo "  4. show"
+    echo "  0. exit"
     echo "=================================="
 }
 
 main() {
-    check_root
     while true; do
         show_menu
-        read -rp "请输入选项 [1-5]: " choice
+        read -rp "Pick [1-5]: " choice
         case "$choice" in
             1) install_shadowsocks ;;
             2) uninstall_shadowsocks ;;
             3) upgrade_shadowsocks ;;
             4) show_current_info ;;
-            5) exit 0 ;;
-            *) echo "无效选项" ;;
+            0) exit 0 ;;
+            *) echo "No" ;;
         esac
         echo
-        read -rp "按回车键返回菜单..." _
+        read -rp "enter..." _
     done
 }
 
