@@ -3,15 +3,15 @@
 while true; do
     clear
     echo "================="
-    echo " 1) 安装 Nezha"
-    echo " 2) 安装 Komari"
-    echo " 3) 安装 3X-UI"
-    echo " 4) 安装 1Panel"
-    echo " 5) 安装 Docker"
-    echo " 6) 安装 Debian"
-    echo " 7) 安装 Warp"
-    echo " 8) 测试 NQ"
-    echo " 0) 退出脚本"
+    echo " 1) Install Nezha"
+    echo " 2) Install Komari"
+    echo " 3) Install 3X-UI"
+    echo " 4) Install 1Panel"
+    echo " 5) Install Docker"
+    echo " 6) Install Debian"
+    echo " 7) Install Warp"
+    echo " 8) Install NQ"
+    echo " 0) exit"
     echo "================="
     read -p "Pick : " choice
 
@@ -41,7 +41,7 @@ while true; do
             bash <(curl -sL https://run.NodeQuality.com)
             ;;
         0)
-            echo "退出脚本..."
+            echo "exit..."
             exit 0
             ;;
         *)
@@ -49,5 +49,5 @@ while true; do
             ;;
     esac
 
-    read -p "按回车键继续..."
+    read -p "enter..."
 done
