@@ -54,9 +54,7 @@ while true; do
             printf "${white}%-12s${purple}%s %s${re}\n" "BBR:"    "${congestion}" "${queue}"
             echo -e "$line"
             printf "${white}%-12s${purple}%s${re}\n" "IPv4:"     "${ipv4}"
-            ipv6_list=($(hostname -I | tr ' ' '\n' | grep ':'))
-            printf "${white}%-12s${purple}%s${re}\n" "IPv6:" "${ipv6_list[0]:-N/A}"
-            for ip6 in "${ipv6_list[@]:1}"; do printf "${white}%-12s${purple}%s${re}\n" "" "$ip6" ; done
+            printf "${white}%-12s${purple}%s${re}\n" "IPv4:"     "${ipv6}"
             echo -e "$line"
             printf "${white}%-12s${purple}%s${re}\n" "DNS:" "${dns_list[0]}"
             for d in "${dns_list[@]:1}"; do printf "${white}%-12s${purple}%s${re}\n" "" "$d"; done
