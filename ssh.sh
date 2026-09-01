@@ -52,7 +52,7 @@ while true; do
             echo ""
             echo -e "${white}tcp|udp: ${purple}${tcp}|${udp}${re}"
             echo ""
-            echo -e "${white} mem: ${purple}${mem_info}${re}"
+            echo -e "${white}mem: ${purple}${mem_info}${re}"
             echo -e "${white}swap: ${purple}${swap_info}${re}"
             echo -e "${white}disk: ${purple}${disk_info}${re}"
             echo -e "${white}load: ${purple}${loadavg}${re}"
