@@ -43,7 +43,7 @@ while true; do
             printf "${white}%-12s${purple}%s${re}\n" "CPU:"      "${cpu_info}"
             printf "${white}%-12s${purple}%s | %s | %s${re}\n" "" "${cpu_arch}" "${cpu_cores} cores" "${cpu_freq}"
             echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "Memo:"   "${mem_info}"
+            printf "${white}%-12s${purple}%s${re}\n" "Memo:"     "${mem_info}"
             printf "${white}%-12s${purple}%s${re}\n" "Swap:"     "${swap_info}"
             printf "${white}%-12s${purple}%s${re}\n" "Disk:"     "${disk_info}"
             echo -e "$line"
