@@ -62,6 +62,7 @@ while true; do
             printf "${white}%-12s${purple}%s${re}\n" "DNS:" "${dns_list[0]}"
             for d in "${dns_list[@]:1}"; do printf "${white}%-12s${purple}%s${re}\n" "" "$d"; done
             echo -e "$line"
+            uptime
             read -n 1 -s -r -p ""
             echo ""
             ;;
