@@ -1,6 +1,6 @@
 #!/bin/bash
 
-re='\e[0m'; red='\e[1;31m'; white='\e[1;30m'; green='\e[1;32m'; yellow='\e[1;33m'; purple='\e[1;35m'; skyblue='\e[1;34m'
+re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
 
 while true; do
     clear
@@ -24,18 +24,14 @@ while true; do
         1)
             ipv4=$(curl -s ipv4.ip.sb); ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
-            cpu_cores=$(nproc); cpu_arch=$(uname -m)
-            cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
+            cpu_arch=$(uname -m);cpu_cores=$(nproc);cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
             disk_info=$(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')
-            kernel_version=$(uname -r)
+            kernel_version=$(uname -r);os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
             congestion=$(sysctl -n net.ipv4.tcp_congestion_control); queue=$(sysctl -n net.core.default_qdisc)
-            os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
             net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "%.2f %s\n%.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
-            net_down=$(echo "$net_traffic" | sed -n '1p')
-            net_up=$(echo "$net_traffic" | sed -n '2p')
-            read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}')
-            swap_info="${swap_used}MB/${swap_total}MB ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
+            net_down=$(echo "$net_traffic" | sed -n '1p');net_up=$(echo "$net_traffic" | sed -n '2p')
+            read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             dns_list=($(awk '/^nameserver/{print $2}' /etc/resolv.conf))
 
             clear
