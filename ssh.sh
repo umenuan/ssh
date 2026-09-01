@@ -22,7 +22,8 @@ while true; do
 
     case $choice in
         1)
-            ipv4=$(curl -s ipv4.ip.sb); ipv6=$(curl -s ipv6.ip.sb)
+            ipv4=$(hostname -I | awk '{print $1}')
+            ipv6=$(hostname -I | tr ' ' '\n' | grep ':')
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
             cpu_arch=$(uname -m);cpu_cores=$(nproc);cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
