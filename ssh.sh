@@ -22,31 +22,46 @@ while true; do
 
     case $choice in
         1)
-            ipv4=$(curl -s ipv4.ip.sb);ipv6=$(curl -s ipv6.ip.sb)
+            ipv4=$(curl -s ipv4.ip.sb); ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
-            cpu_cores=$(nproc);cpu_arch=$(uname -m)
+            cpu_cores=$(nproc); cpu_arch=$(uname -m)
             cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
             disk_info=$(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')
             kernel_version=$(uname -r)
-            congestion=$(sysctl -n net.ipv4.tcp_congestion_control);queue=$(sysctl -n net.core.default_qdisc)
+            congestion=$(sysctl -n net.ipv4.tcp_congestion_control); queue=$(sysctl -n net.core.default_qdisc)
             os_info=$(lsb_release -ds 2>/dev/null || echo "Debian $(</etc/debian_version)")
-            net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "do: %.2f %s\nup: %.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
-            read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB";swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
-            dns=$(awk '/^nameserver/{printf "%s ", $2} END {print ""}' /etc/resolv.conf)
+            net_traffic=$(awk 'NR>2{rx+=$2; tx+=$10} END {split("Bytes KB MB GB", u); while(rx>1024&&r<3){rx/=1024; r++}; while(tx>1024&&t<3){tx/=1024; t++}; printf "%.2f %s\n%.2f %s", rx, u[r+1], tx, u[t+1]}' /proc/net/dev)
+            net_down=$(echo "$net_traffic" | sed -n '1p')
+            net_up=$(echo "$net_traffic" | sed -n '2p')
+            read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}')
+            swap_info="${swap_used}MB/${swap_total}MB ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
+            dns_list=($(awk '/^nameserver/{print $2}' /etc/resolv.conf))
+
             clear
-            echo -e "${white}system: ${purple}${os_info}${re}"
-            echo -e "${white}kernel: ${purple}${kernel_version}${re}"
-            echo -e "${white}cpu_info: ${purple}${cpu_info}${re}"
-            echo -e "${white}cpu_arch: ${purple}${cpu_arch}${re} ${white}cpu_core: ${purple}${cpu_cores}${re} ${white}cpu_freq: ${purple}${cpu_freq}${re}"
-            echo -e "${white}memo: ${purple}${mem_info}${re}"
-            echo -e "${white}swap: ${purple}${swap_info}${re}"
-            echo -e "${white}disk: ${purple}${disk_info}${re}"
-            echo -e "${purple}$net_traffic${re}"
-            echo -e "${white}bbr: ${purple}${congestion} ${queue}${re}"
-            echo -e "${white}ipv4: ${purple}${ipv4}${re}"
-            echo -e "${white}ipv6: ${purple}${ipv6}${re}"
-            echo -e "${white}dns: ${purple}${dns}${re}"
+            line="${white}------------------------------------------------------------${re}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "System:"   "${os_info}"
+            printf "${white}%-12s${purple}%s${re}\n" "Kernel:"   "${kernel_version}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "CPU:"      "${cpu_info}"
+            printf "${white}%-12s${purple}%s | %s | %s${re}\n" "" "${cpu_arch}" "${cpu_cores} cores" "${cpu_freq}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "Memo:"   "${mem_info}"
+            printf "${white}%-12s${purple}%s${re}\n" "Swap:"     "${swap_info}"
+            printf "${white}%-12s${purple}%s${re}\n" "Disk:"     "${disk_info}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "Down:"     "${net_down}"
+            printf "${white}%-12s${purple}%s${re}\n" "Up:"       "${net_up}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s %s${re}\n" "BBR:"    "${congestion}" "${queue}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "IPv4:"     "${ipv4}"
+            printf "${white}%-12s${purple}%s${re}\n" "IPv6:"     "${ipv6}"
+            echo -e "$line"
+            printf "${white}%-12s${purple}%s${re}\n" "DNS:" "${dns_list[0]}"
+            printf "${white}%-12s${purple}%s${re}\n" "" "${dns_list[@]:1}"
+            echo -e "$line"
             read -n 1 -s -r -p ""
             echo ""
             ;;
