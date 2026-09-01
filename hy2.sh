@@ -81,7 +81,7 @@ EOF
     echo -e "config : ${YELLOW}$CONF_FILE${NC}"
     echo -e "${YELLOW}$LINK${NC}"
     echo -e "node_file : ${YELLOW}$NODE_FILE${NC}"
-    echo -e "${GREEN}================================${NC}"
+    echo -e "${GREEN}==============================${NC}"
 }
 
 do_uninstall(){
@@ -108,7 +108,7 @@ show_node(){
     if [[ -f $NODE_FILE ]]; then
         echo -e "${GREEN}=========== info ===========${NC}"
         cat "$NODE_FILE"
-        echo -e "${GREEN}================================${NC}"
+        echo -e "${GREEN}============================${NC}"
     else
         echo -e "${RED}null！${NC}"
     fi
@@ -122,7 +122,7 @@ while true; do
     echo "3) uninstall"
     echo "4) show"
     echo "0) exit"
-    echo -e "${GREEN}===================================${NC}"
+    echo -e "${GREEN}=========================${NC}"
     read -rp "Pick [1-5]: " option
     case "$option" in
         1) do_install ;;
