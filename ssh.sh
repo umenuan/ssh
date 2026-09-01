@@ -22,7 +22,6 @@ while true; do
 
     case $choice in
         1)
-            clear
             ipv4=$(curl -s ipv4.ip.sb);ipv6=$(curl -s ipv6.ip.sb)
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//');cpu_cores=$(nproc);cpu_arch=$(uname -m)
             cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
@@ -36,12 +35,10 @@ while true; do
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB";swap_info+=" ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             dns=$(awk '/^nameserver/{printf "%s ", $2} END {print ""}' /etc/resolv.conf)
             loadavg=$(awk '{print $1, $2, $3}' /proc/loadavg)
-            tcp=$(ss -t | wc -l) && udp=$(ss -u | wc -l)
             current_time=$(date "+%Y-%m-%d %H:%M:%S")  && runtime=$(uptime -p)
-            echo ""
+            clear
             echo -e "${white}hostname: ${purple}${hostname}${re}"
             echo -e "${white}asninfo: ${purple}${isp_info}${re}"
-            echo ""
             echo -e "${white}system: ${purple}${os_info}${re}"
             echo -e "${white}kernel: ${purple}${kernel_version}${re}"
             echo ""
@@ -49,8 +46,6 @@ while true; do
             echo -e "${white}cpu_info: ${purple}${cpu_info}${re}"
             echo -e "${white}cpu_cores: ${purple}${cpu_cores}${re}"
             echo -e "${white}cpu_freq: ${purple}${cpu_freq}${re}"
-            echo ""
-            echo -e "${white}tcp|udp: ${purple}${tcp}|${udp}${re}"
             echo ""
             echo -e "${white}mem: ${purple}${mem_info}${re}"
             echo -e "${white}swap: ${purple}${swap_info}${re}"
@@ -65,7 +60,7 @@ while true; do
             echo -e "${white}ipv6: ${purple}${ipv6}${re}"
             echo ""
             echo -e "${white}city: ${purple}${country} $city${re}"
-            echo -e "${white}time: ${purple}${current_time}${re}"
+            echo -e "${white}date: ${purple}${current_time}${re}"
             echo ""          
             echo -e "${white}dns: ${purple}${dns}${re}"
             echo ""
