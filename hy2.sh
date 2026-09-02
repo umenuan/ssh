@@ -28,8 +28,6 @@ do_install(){
 
     local PORT PASS IP LINK IP_TYPE
     PORT=$(rand_port); PASS=$(rand_hex)
-    echo "1) IPv4"; echo "2) IPv6"
-    read -rp "Pick [1-2]: " IP_TYPE; IP_TYPE=${IP_TYPE:-1}
     read -rp "port [${PORT}]: " p; PORT=${p:-$PORT}
     read -rp "pass [${PASS}]: " p; PASS=${p:-$PASS}
 
@@ -68,13 +66,8 @@ EOF
     systemctl enable --now "$SERVICE_NAME"
     ufw allow "$PORT/udp" >/dev/null 2>&1
 
-    if [[ "$IP_TYPE" == "2" ]]; then
-        IP=$(curl -6 -s https://api64.ipify.org || curl -s ipv6.ip.sb)
-        LINK="hysteria2://${PASS}@[${IP}]:${PORT}?insecure=1&pinSHA256=${pinSHA256}#HY2-${IP}"
-    else
-        IP=$(curl -4 -s https://api.ipify.org || curl -s ipv4.ip.sb)
-        LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1&pinSHA256=${pinSHA256}#HY2-${IP}"
-    fi
+    IP=$(hostname -I | awk '{print $1}')
+    LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1&pinSHA256=${pinSHA256}#HY2-${IP}"
 
     echo "$LINK" > "$NODE_FILE"
     echo -e "${GREEN}=========== finish ===========${NC}"
@@ -132,5 +125,5 @@ while true; do
         0) exit 0 ;;
         *) echo -e "${RED}No！${NC}" ;;
     esac
-    echo; read -rp "enter..." _
+    echo; read -rp "skip..." _
 done
