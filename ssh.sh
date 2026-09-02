@@ -60,14 +60,11 @@ while true; do
             printf "${white}%-12s${purple}%s${re}\n" "DNS:" "${dns_list[0]}"
             for d in "${dns_list[@]:1}"; do printf "${white}%-12s${purple}%s${re}\n" "" "$d"; done
             echo -e "$line"
-            uptime
-            echo -e "$line"
             read -n 1 -s -r -p ""
             echo ""
             ;;
         2)
             clear
-            echo -e "${yellow}apt...${re}"
             apt update && apt upgrade -y
             apt autoremove --purge -y && apt clean && apt autoclean
             apt install -y curl wget unzip sudo ufw openssl
