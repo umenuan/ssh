@@ -24,14 +24,6 @@ is_installed() {
     [[ -f "${BIN_DIR}/ssserver" && -f "${SERVICE_FILE}" ]]
 }
 
-get_public_ip() {
-    hostname -I | awk '{print $1}'
-}
-
-get_public_ipv6() {
-    hostname -I | tr ' ' '\n' | grep ':' | head -n 1
-}
-
 print_connection_info() {
     local ip4="$1" ip6="$2" port="$3" method="$4" password="$5"
     local b64 link4 link6 tag
@@ -150,8 +142,8 @@ EOF
         ufw allow "${port}/tcp" >/dev/null 2>&1
     fi
 
-    ip=$(get_public_ip)
-    ip6=$(get_public_ipv6)
+    ip=$(hostname -I | awk '{print $1}')
+    ip6=$(hostname -I | tr ' ' '\n' | grep ':' | head -n 1)
     echo
     print_connection_info "$ip" "$ip6" "$port" "$method" "$key"
 
@@ -232,8 +224,8 @@ show_current_info() {
         port=$(jq -r '.servers[0].server_port' "$CONFIG_FILE")
         method=$(jq -r '.servers[0].method' "$CONFIG_FILE")
         key=$(jq -r '.servers[0].password' "$CONFIG_FILE")
-        ip=$(get_public_ip)
-        ip6=$(get_public_ipv6)
+        ip=$(hostname -I | awk '{print $1}')
+        ip6=$(hostname -I | tr ' ' '\n' | grep ':' | head -n 1)
         print_connection_info "$ip" "$ip6" "$port" "$method" "$key"
     else
         echo "Install first."
