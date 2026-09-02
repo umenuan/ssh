@@ -70,6 +70,7 @@ EOF
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1&pinSHA256=${pinSHA256}#HY2-${IP}"
 
     echo "$LINK" > "$NODE_FILE"
+    echo ""
     echo -e "${YELLOW}$LINK${NC}"
 }
 
