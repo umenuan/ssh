@@ -67,8 +67,8 @@ print_connection_info() {
 
 install_shadowsocks() {
     if is_installed; then
-        echo "Shadowsocks-Rust Installed"
-        read -rp "Reinstall ? (y/N): " confirm
+        echo "SS installed!"
+        read -rp "reinstall ? (y/N): " confirm
         [[ "$confirm" != "y" && "$confirm" != "Y" ]] && return
         systemctl stop shadowsocks 2>/dev/null || true
     fi
@@ -164,7 +164,7 @@ EOF
 
 uninstall_shadowsocks() {
     if ! is_installed; then
-        echo "Installation not detected!"
+        echo "no!"
         return
     fi
 
@@ -184,12 +184,12 @@ uninstall_shadowsocks() {
         ufw delete allow "${port}/tcp" >/dev/null 2>&1
     fi
 
-    echo "Uninstallation complete."
+    echo "Uninstallation complete"
 }
 
 upgrade_shadowsocks() {
     if ! is_installed; then
-        echo "Shadowsocks-Rust not installed"
+        echo "no!"
         return
     fi
 
@@ -268,7 +268,7 @@ main() {
             *) echo "No" ;;
         esac
         echo
-        read -rp "enter..." _
+        read -rp "skip..." _
     done
 }
 
