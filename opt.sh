@@ -41,7 +41,6 @@ while true; do
             bash <(curl -sL https://run.NodeQuality.com)
             ;;
         0)
-            echo "exit..."
             exit 0
             ;;
         *)
@@ -49,5 +48,5 @@ while true; do
             ;;
     esac
 
-    read -p "enter..."
+    read -p "skip..."
 done
