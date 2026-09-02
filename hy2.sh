@@ -112,7 +112,7 @@ while true; do
     echo "4) show"
     echo "0) exit"
     echo -e "${GREEN}=========================${NC}"
-    read -rp "Pick [0-4]: " option
+    read -rp "Pick : " option
     case "$option" in
         1) do_install ;;
         2) do_upgrade ;;
