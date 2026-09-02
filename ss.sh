@@ -248,7 +248,7 @@ show_menu() {
 main() {
     while true; do
         show_menu
-        read -rp "Pick [1-5]: " choice
+        read -rp "Pick [0-4]: " choice
         case "$choice" in
             1) install_shadowsocks ;;
             2) uninstall_shadowsocks ;;
