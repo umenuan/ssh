@@ -41,7 +41,7 @@ print_connection_info() {
 
     {
         echo "=============================="
-        echo "Shadowsocks-Rust ok"
+        echo "Shadowsocks-Rust is OK!"
         echo "    port: ${port}"
         echo "  method: ${method}"
         echo "password: ${password}"
@@ -49,14 +49,12 @@ print_connection_info() {
         if [[ -n "$ip4" ]]; then
             link4="ss://${b64}@${ip4}:${port}#${tag}-v4"
             echo "IPv4: ${ip4}"
-            echo "IPv4 Link:"
             echo "${link4}"
             echo "------------------------------"
         fi
         if [[ -n "$ip6" ]]; then
             link6="ss://${b64}@[${ip6}]:${port}#${tag}-v6"
             echo "IPv6: ${ip6}"
-            echo "IPv6 Link:"
             echo "${link6}"
             echo "------------------------------"
         fi
