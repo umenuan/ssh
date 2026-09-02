@@ -25,11 +25,11 @@ is_installed() {
 }
 
 get_public_ip() {
-    curl -4 -s --max-time 5 https://api.ipify.org
+    hostname -I | awk '{print $1}'
 }
 
 get_public_ipv6() {
-    curl -6 -s --max-time 5 https://api64.ipify.org
+    hostname -I | tr ' ' '\n' | grep ':' | head -n 1
 }
 
 print_connection_info() {
