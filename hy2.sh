@@ -70,11 +70,7 @@ EOF
     LINK="hysteria2://${PASS}@${IP}:${PORT}?insecure=1&pinSHA256=${pinSHA256}#HY2-${IP}"
 
     echo "$LINK" > "$NODE_FILE"
-    echo -e "${GREEN}=========== finish ===========${NC}"
-    echo -e "config : ${YELLOW}$CONF_FILE${NC}"
     echo -e "${YELLOW}$LINK${NC}"
-    echo -e "node_file : ${YELLOW}$NODE_FILE${NC}"
-    echo -e "${GREEN}==============================${NC}"
 }
 
 do_uninstall(){
