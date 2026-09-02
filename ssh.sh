@@ -1,7 +1,5 @@
 #!/bin/bash
 
-##re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
-
 while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
@@ -48,7 +46,7 @@ while true; do
             printf "${white}%-12s${purple}%s${re}\n" "Disk:"     "${disk_info}"
             echo -e "$line"
             printf "${white}%-12s${purple}%s${re}\n" "Down:"     "${net_down}"
-            printf "${white}%-12s${purple}%s${re}\n" "Up:"       "${net_up}"
+            printf "${white}%-12s${purple}%s${re}\n" "Uoop:"       "${net_up}"
             echo -e "$line"
             printf "${white}%-12s${purple}%s %s${re}\n" "BBR:"    "${congestion}" "${queue}"
             echo -e "$line"
