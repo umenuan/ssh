@@ -1,5 +1,7 @@
 #!/bin/bash
 
+re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
+
 while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
