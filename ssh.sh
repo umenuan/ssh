@@ -1,6 +1,6 @@
 #!/bin/bash
 
-re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
+##re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
 
 while true; do
     clear
@@ -23,8 +23,7 @@ while true; do
     case $choice in
         1)
             ipv4=$(hostname -I | awk '{print $1}')
-            ##ipv6=$(hostname -I | tr ' ' '\n' | grep ':')
-            ipv6=$(ip -6 -o addr show scope global | awk '{print $4}' | cut -d/ -f1)
+            ipv6=$(hostname -I | tr ' ' '\n' | grep ':')
             cpu_info=$(awk -F: '/model name/ {print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
             cpu_arch=$(uname -m);cpu_cores=$(nproc);cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
             mem_info=$(free -b | awk 'NR==2{u=$3/1048576;t=$2/1048576;printf"%.2f/%.2f MB (%.2f%%)",u,t,u*100/t}')
@@ -35,7 +34,6 @@ while true; do
             net_down=$(echo "$net_traffic" | sed -n '1p');net_up=$(echo "$net_traffic" | sed -n '2p')
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             dns_list=($(awk '/^nameserver/{print $2}' /etc/resolv.conf))
-
             clear
             line="${white}------------------------------------------------------------${re}"
             echo -e "$line"
