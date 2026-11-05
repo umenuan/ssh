@@ -55,7 +55,7 @@ print_connection_info() {
     } | tee "$INFO_FILE"
 }
 
-install_shadowsocks() {
+install() {
     if is_installed; then
         echo "SS installed!"
         read -rp "reinstall ? (y/N): " confirm
@@ -154,7 +154,7 @@ EOF
     echo "ok！"
 }
 
-uninstall_shadowsocks() {
+uninstall() {
     if ! is_installed; then
         echo "no!"
         return
@@ -179,7 +179,7 @@ uninstall_shadowsocks() {
     echo "Uninstallation complete"
 }
 
-upgrade_shadowsocks() {
+upgrade() {
     if ! is_installed; then
         echo "no!"
         return
@@ -218,7 +218,7 @@ upgrade_shadowsocks() {
     echo "Upgrade complete: ${version}"
 }
 
-show_current_info() {
+show() {
     if [[ -f "$INFO_FILE" ]]; then
         cat "$INFO_FILE"
     elif [[ -f "$CONFIG_FILE" ]]; then
