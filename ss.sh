@@ -90,11 +90,13 @@ install_shadowsocks() {
     install -m 755 ssserver "${BIN_DIR}/"
     install -m 755 sslocal "${BIN_DIR}/"
 
+    method="2022-blake3-aes-256-gcm"
+    
     read -rp "enter port: " port
     [[ -z "$port" ]] && port=$(shuf -i 10000-60000 -n 1)
 
-    method="2022-blake3-aes-256-gcm"
-    key=$(openssl rand -base64 32)
+    read -rp "enter password: " key
+    [[ -z "$key" ]] && key=$(openssl rand -base64 32)
 
     mkdir -p "$CONFIG_DIR"
     cat >"$CONFIG_FILE" <<EOF
