@@ -252,10 +252,10 @@ main() {
         show_menu
         read -rp "Pick : " choice
         case "$choice" in
-            1) install_shadowsocks ;;
-            2) uninstall_shadowsocks ;;
-            3) upgrade_shadowsocks ;;
-            4) show_current_info ;;
+            1) install ;;
+            2) uninstall ;;
+            3) upgrade ;;
+            4) show ;;
             0) exit 0 ;;
             *) echo "No" ;;
         esac
