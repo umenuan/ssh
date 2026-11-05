@@ -11,6 +11,7 @@ while true; do
     echo " 6) Install Debian"
     echo " 7) Install Warp"
     echo " 8) Install NQ"
+    echo " 9) Install ST"
     echo " 0) exit"
     echo "================="
     read -p "Pick : " choice
@@ -39,6 +40,9 @@ while true; do
             ;;
         8)
             bash <(curl -sL https://run.NodeQuality.com)
+            ;;
+        9)
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash  && apt install speedtest -y
             ;;
         0)
             exit 0
