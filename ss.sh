@@ -95,7 +95,7 @@ install_shadowsocks() {
     read -rp "enter port: " port
     [[ -z "$port" ]] && port=$(shuf -i 10000-60000 -n 1)
 
-    read -rp "enter password: " key
+    read -rp "enter pass: " key
     [[ -z "$key" ]] && key=$(openssl rand -base64 32)
 
     mkdir -p "$CONFIG_DIR"
