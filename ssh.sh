@@ -2,6 +2,8 @@
 
 re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
 
+echo "alias m='bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ssh.sh)'" > ~/.bashrc && source ~/.bashrc
+
 while true; do
     clear
     echo -e "${skyblue}  MY VPS${re}"
