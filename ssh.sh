@@ -1,26 +1,24 @@
 #!/bin/bash
 
-re='\e[0m'; red='\e[0;31m'; white='\e[0;30m'; green='\e[0;32m'; yellow='\e[0;33m'; purple='\e[0;35m'; skyblue='\e[0;34m'
-
 echo "alias m='bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ssh.sh)'" > ~/.bashrc && source ~/.bashrc
 
 while true; do
     clear
-    echo -e "${skyblue}  MY VPS${re}"
+    echo "  MY VPS"
     echo "=========="
-    echo -e "${green} 1. vps"
-    echo -e "${green} 2. apt"
-    echo -e "${green} 3. opt"
-    echo -e "${green} 4. bbr"
-    echo -e "${green} 5. dns"
-    echo -e "${green} 6. hy2"
-    echo -e "${green} 7. ss"
-    echo -e "${green} 8. rb"
-    echo -e "${green} 9. ok"
+    echo " 1. vps"
+    echo " 2. apt"
+    echo " 3. opt"
+    echo " 4. bbr"
+    echo " 5. dns"
+    echo " 6. hy2"
+    echo " 7. ss"
+    echo " 8. rb"
+    echo " 9. ok"
     echo "=========="
-    echo -e "${green} 0. exit ${re}"
+    echo " 0. exit "
     echo "=========="
-    read -p $'\033[1;91m Pick: \033[0m' choice
+    read -p " Pick: " choice
 
     case $choice in
         1)
@@ -37,29 +35,29 @@ while true; do
             read swap_used swap_total <<< $(free -m | awk '/Swap:/{print $3, $2}');swap_info="${swap_used}MB/${swap_total}MB ($(( swap_total ? swap_used * 100 / swap_total : 0 ))%)"
             dns_list=($(awk '/^nameserver/{print $2}' /etc/resolv.conf))
             clear
-            line="${white}------------------------------------------------------------${re}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "System:"   "${os_info}"
-            printf "${white}%-12s${purple}%s${re}\n" "Kernel:"   "${kernel_version}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "CPU:"      "${cpu_info}"
-            printf "${white}%-12s${purple}%s | %s | %s${re}\n" "" "${cpu_arch}" "${cpu_cores} cores" "${cpu_freq}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "Memo:"     "${mem_info}"
-            printf "${white}%-12s${purple}%s${re}\n" "Swap:"     "${swap_info}"
-            printf "${white}%-12s${purple}%s${re}\n" "Disk:"     "${disk_info}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "Down:"     "${net_down}"
-            printf "${white}%-12s${purple}%s${re}\n" "Uoop:"     "${net_up}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s %s${re}\n" "BBR:"   "${congestion}" "${queue}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "IPv4:"     "${ipv4}"
-            printf "${white}%-12s${purple}%s${re}\n" "IPv6:"     "${ipv6}"
-            echo -e "$line"
-            printf "${white}%-12s${purple}%s${re}\n" "DNS:" "${dns_list[0]}"
-            for d in "${dns_list[@]:1}"; do printf "${white}%-12s${purple}%s${re}\n" "" "$d"; done
-            echo -e "$line"
+            line="------------------------------------------------------------"
+            echo "$line"
+            printf "%-12s%s\n" "System:"   "${os_info}"
+            printf "%-12s%s\n" "Kernel:"   "${kernel_version}"
+            echo "$line"
+            printf "%-12s%s\n" "CPU:"      "${cpu_info}"
+            printf "%-12s%s | %s | %s\n" "" "${cpu_arch}" "${cpu_cores} cores" "${cpu_freq}"
+            echo "$line"
+            printf "%-12s%s\n" "Memo:"     "${mem_info}"
+            printf "%-12s%s\n" "Swap:"     "${swap_info}"
+            printf "%-12s%s\n" "Disk:"     "${disk_info}"
+            echo "$line"
+            printf "%-12s%s\n" "Down:"     "${net_down}"
+            printf "%-12s%s\n" "Uoop:"     "${net_up}"
+            echo "$line"
+            printf "%-12s%s %s\n" "BBR:"   "${congestion}" "${queue}"
+            echo "$line"
+            printf "%-12s%s\n" "IPv4:"     "${ipv4}"
+            printf "%-12s%s\n" "IPv6:"     "${ipv6}"
+            echo "$line"
+            printf "%-12s%s\n" "DNS:" "${dns_list[0]}"
+            for d in "${dns_list[@]:1}"; do printf "%-12s%s\n" "" "$d"; done
+            echo "$line"
             read -n 1 -s -r -p ""
             echo ""
             ;;
@@ -68,7 +66,7 @@ while true; do
             apt update && apt upgrade -y
             apt autoremove --purge -y && apt clean && apt autoclean
             apt install -y curl wget unzip sudo ufw openssl
-            echo -e "${green}ok！${re}"
+            echo "ok！"
             read -n 1 -s -r -p ""
             ;;
         3)
@@ -82,7 +80,7 @@ while true; do
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
             sysctl net.ipv4.tcp_congestion_control net.core.default_qdisc
-            echo -e "${green}BBR+FQ is OK！${re}"
+            echo "BBR+FQ is OK！"
             read -n 1 -s -r -p ""
             ;;
         5)
@@ -107,7 +105,7 @@ while true; do
             clear
             bash <(curl -Ls https://raw.githubusercontent.com/umenuan/ssh/main/ss.sh)
             read -n 1 -s -r -p ""
-            ;;       
+            ;;
         8)
             reboot
             ;;
@@ -116,7 +114,7 @@ while true; do
             echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
             sysctl --system >/dev/null 2>&1
             echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844" > /etc/resolv.conf
-            echo -e "${green}BBR+FQ+DNS is OK！${re}"
+            echo "BBR+FQ+DNS is OK！"
             read -n 1 -s -r -p ""
             ;;
         0)
