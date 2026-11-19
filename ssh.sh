@@ -58,7 +58,7 @@ while true; do
             printf "%-12s%s\n" "DNS:" "${dns_list[0]}"
             for d in "${dns_list[@]:1}"; do printf "%-12s%s\n" "" "$d"; done
             echo "$line"
-            echo "a u ok?"
+            echo "are u ok"
             read -n 1 -s -r -p ""
             echo ""
             ;;
