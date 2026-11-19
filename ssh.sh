@@ -14,7 +14,7 @@ while true; do
     echo " 6. hy2"
     echo " 7. ss"
     echo " 8. rb"
-    echo " 9. ok"
+    echo " 9. ook"
     echo "=========="
     echo " 0. exit "
     echo "=========="
