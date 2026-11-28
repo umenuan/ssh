@@ -9,7 +9,6 @@ alias 6='bash <(wget -qO- https://raw.githubusercontent.com/umenuan/ssh/main/6.s
 alias 7='bash <(wget -qO- https://raw.githubusercontent.com/umenuan/ssh/main/7.sh)'
 alias 8='bash <(wget -qO- https://raw.githubusercontent.com/umenuan/ssh/main/8.sh)'
 alias 9='bash <(wget -qO- https://raw.githubusercontent.com/umenuan/ssh/main/9.sh)'
-
 alias a='bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) debian --ssh-key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmhMiWBMLsvwLJY2X6qkCm+Lm/tEOu4SCH+/ujMw9oO"'
 alias b='bash <(curl -Ls https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh) reset'
 alias c='clear'
@@ -36,7 +35,5 @@ alias w='wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash men
 alias x='bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)'
 alias y='systemctl list-units --type=service --state=running'
 alias z='crontab'
-
 EOF
-
 source ~/.bashrc
